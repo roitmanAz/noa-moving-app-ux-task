@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מדריך פרקטי: עקרונות ומבנה התהליך החכם (update.html)</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --teal: #0d9488;
+      --teal-light: #ccfbf1;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --amber: #d97706;
+      --amber-bg: #fef3c7;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 2rem 1.25rem;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      border-right: 5px solid var(--teal);
+    }
+
+    .header-card h1 {
+      font-size: 1.5rem;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .header-card p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.9rem;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn.primary {
+      background: var(--teal);
+      color: white;
+    }
+
+    .nav-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* KPI Highlights */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .kpi-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .kpi-title {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .kpi-val {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-card h2 {
+      font-size: 1.15rem;
+      margin-bottom: 0.65rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Practical Flow Steps */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .flow-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .flow-card h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-main);
+    }
+
+    .flow-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Clean Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      margin-top: 0.75rem;
+    }
+
+    th, td {
+      padding: 0.7rem 0.8rem;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.18rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-field {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .badge-doc {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-auto {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .badge-manual {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .note-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Comparison Table */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .compare-box {
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .compare-box.old {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+
+    .compare-box.new {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .compare-box h4 {
+      font-size: 0.88rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .compare-box ul {
+      padding-right: 1.15rem;
+      font-size: 0.8rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header-card">
+      <h1>מדריך פרקטי: תהליך החלפת משלמים חכם (update.html)</h1>
+      <p>תמצית מעשית של מבנה הטופס: מה מקלידים ידנית, מה מועלה כקובץ, ומה נשלף אוטומטית.</p>
+      
+      <div class="nav-links">
+        <a href="update.html" class="nav-btn primary">
+          ⚡ פתיחת הטופס החכם (update.html)
+        </a>
+        <a href="index.html" class="nav-btn">
+          📋 פתיחת המסלול הארוך (index.html)
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 Key Numbers -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background: #e0f2fe; color: #0284c7;">✍️</div>
+        <div>
+          <div class="kpi-title">הקלדה ידנית</div>
+          <div class="kpi-val">4 שדות בלבד</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background: #fef3c7; color: #d97706;">📁</div>
+        <div>
+          <div class="kpi-title">קבצי חובה</div>
+          <div class="kpi-val">3 מסמכים</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background: #dcfce7; color: #16a34a;">⚡</div>
+        <div>
+          <div class="kpi-title">שליפה אוטומטית</div>
+          <div class="kpi-val">100% מהנכס והמונה</div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background: #f3e8ff; color: #7e22ce;">⏱️</div>
+        <div>
+          <div class="kpi-title">זמן מילוי ממוצע</div>
+          <div class="kpi-val">פחות מ-2 דקות</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Flow Process -->
+    <div class="section-card">
+      <h2>1. שלבי התהליך החכם</h2>
+      <div class="flow-steps">
+        <div class="flow-card">
+          <span class="flow-badge">שלב 1</span>
+          <h3>בחירת פעולה ומגיש</h3>
+          <p>הגדרת הפעולה (תחילת/סיום שכירות) ובחירה מי מגיש (עצמי / מיופה כוח).</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-badge">שלב 2</span>
+          <h3>מסמכים להכנה מראש</h3>
+          <p>רשימת הכנה תמציתית עם תמונות דוגמה בסימני ה-? לבדיקה מהירה.</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-badge">שלב 3</span>
+          <h3>פרטי זיהוי וקשר</h3>
+          <p>הזנת 4 שדות בלבד: שם, ת.ז, נייד ודוא"ל (ללא עיכוב קוד OTP).</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-badge">שלב 4</span>
+          <h3>העלאה וחילוץ נתונים</h3>
+          <p>צילום מונה, חוזה ותעודות זהות – המערכת סורקת ושולפת את נתוני הנכס והקריאה.</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-badge">שלב 5</span>
+          <h3>סיכום, עריכה ✎ וחתימה</h3>
+          <p>הצגת כל הנתונים שהוזנו ונשלפו בטבלת סיכום עם כפתורי עריכה, הצהרה וחתימה.</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-badge">שלב 6</span>
+          <h3>אישור וקבלת אסמכתא</h3>
+          <p>הנפקת מספר פנייה למעקב (RG-2026-8841) ואישור רשמי בדיגיטל.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practical Field & File Table -->
+    <div class="section-card">
+      <h2>2. טבלת סיווג: שדות ידניים מול קבצים ושדות נשלפים</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 22%;">פריט</th>
+            <th style="width: 15%;">סוג</th>
+            <th style="width: 18%;">אופן הקליטה</th>
+            <th style="width: 20%;">מקור המידע</th>
+            <th style="width: 25%;">הסבר תמציתי</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Manual Fields -->
+          <tr>
+            <td><strong>שם פרטי ומשפחה</strong></td>
+            <td><span class="badge badge-field">שדה</span></td>
+            <td><span class="badge badge-manual">הזנה ידנית</span></td>
+            <td>השוכר/ת</td>
+            <td class="note-text">לפתיחת הפנייה והצלבה מול החוזה.</td>
+          </tr>
+
+          <tr>
+            <td><strong>מספר ת.ז</strong></td>
+            <td><span class="badge badge-field">שדה</span></td>
+            <td><span class="badge badge-manual">הזנה ידנית</span></td>
+            <td>השוכר/ת</td>
+            <td class="note-text">זיהוי חד-ערכי ובדיקת ספרת ביקורת.</td>
+          </tr>
+
+          <tr>
+            <td><strong>טלפון נייד</strong></td>
+            <td><span class="badge badge-field">שדה</span></td>
+            <td><span class="badge badge-manual">הזנה ידנית</span></td>
+            <td>השוכר/ת</td>
+            <td class="note-text">לקבלת עדכוני סטטוס ב-SMS.</td>
+          </tr>
+
+          <tr>
+            <td><strong>אימייל</strong></td>
+            <td><span class="badge badge-field">שדה</span></td>
+            <td><span class="badge badge-manual">הזנה ידנית</span></td>
+            <td>השוכר/ת</td>
+            <td class="note-text">למשלוח האישור הסופי והמסמך החתום.</td>
+          </tr>
+
+          <!-- Uploaded Documents -->
+          <tr>
+            <td><strong>צילום מונה מים</strong></td>
+            <td><span class="badge badge-doc">קובץ חובה</span></td>
+            <td><span class="badge badge-doc">העלאת תמונה</span></td>
+            <td>צילום השעון</td>
+            <td class="note-text">קריאת המונה נשלפת אוטומטית מהתמונה.</td>
+          </tr>
+
+          <tr>
+            <td><strong>חוזה שכירות</strong></td>
+            <td><span class="badge badge-doc">קובץ חובה</span></td>
+            <td><span class="badge badge-doc">העלאת PDF / תמונה</span></td>
+            <td>עמודי החוזה</td>
+            <td class="note-text">הכתובת, תאריך הכניסה והמשכיר נשלפים ממנו.</td>
+          </tr>
+
+          <tr>
+            <td><strong>ת.ז וספח משכיר</strong></td>
+            <td><span class="badge badge-doc">קובץ חובה</span></td>
+            <td><span class="badge badge-doc">העלאת תמונה</span></td>
+            <td>תעודת בעל הנכס</td>
+            <td class="note-text">אימות בעל הנכס מול רישומי התאגיד.</td>
+          </tr>
+
+          <tr>
+            <td><strong>ת.ז וספח שוכר/ת</strong></td>
+            <td><span class="badge badge-doc">קובץ חובה</span></td>
+            <td><span class="badge badge-doc">העלאת תמונה</span></td>
+            <td>תעודת השוכר/ת</td>
+            <td class="note-text">אימות זהות מגיש הבקשה.</td>
+          </tr>
+
+          <tr>
+            <td><strong>ספחי דיירים נוספים</strong></td>
+            <td><span class="badge badge-doc">קובץ רשות</span></td>
+            <td><span class="badge badge-doc">העלאת תמונות (+)</span></td>
+            <td>ספחי בגירים בדירה</td>
+            <td class="note-text">רשות – להנחת תעריף מים מוזל (7 מ"ק לנפש).</td>
+          </tr>
+
+          <!-- Extracted Fields -->
+          <tr>
+            <td><strong>כתובת הדירה</strong></td>
+            <td><span class="badge badge-field">שדה נשלף</span></td>
+            <td><span class="badge badge-auto">שליפה אוטומטית ✓</span></td>
+            <td>מתוך החוזה</td>
+            <td class="note-text">מוצג לאישור המשתמש ללא הקלדה.</td>
+          </tr>
+
+          <tr>
+            <td><strong>תאריך כניסה</strong></td>
+            <td><span class="badge badge-field">שדה נשלף</span></td>
+            <td><span class="badge badge-auto">שליפה אוטומטית ✓</span></td>
+            <td>מתוך החוזה</td>
+            <td class="note-text">מועד תחילת החיוב על שם השוכר.</td>
+          </tr>
+
+          <tr>
+            <td><strong>קריאת מונה</strong></td>
+            <td><span class="badge badge-field">שדה נשלף</span></td>
+            <td><span class="badge badge-auto">שליפה אוטומטית ✓</span></td>
+            <td>מצילום המונה</td>
+            <td class="note-text">ערך המונה במ"ק נחלץ ומאושר במסך הסיכום.</td>
+          </tr>
+
+          <tr>
+            <td><strong>פרטי המשכיר</strong></td>
+            <td><span class="badge badge-field">שדה נשלף</span></td>
+            <td><span class="badge badge-auto">שליפה אוטומטית ✓</span></td>
+            <td>מהחוזה ות.ז המשכיר</td>
+            <td class="note-text">שם ות.ז המשכיר מוצלבים ונשמרים.</td>
+          </tr>
+
+          <tr>
+            <td><strong>חתימה דיגיטלית</strong></td>
+            <td><span class="badge badge-field">חתימה</span></td>
+            <td><span class="badge badge-manual">מגע / עכבר</span></td>
+            <td>חתימת השוכר</td>
+            <td class="note-text">אישור משפטי ישיר על גבי המסך.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Direct Comparison -->
+    <div class="section-card">
+      <h2>3. השוואה תמציתית: המסלול הישן מול המסלול החכם</h2>
+      <div class="compare-grid">
+        <div class="compare-box old">
+          <h4 style="color: #be123c;">❌ המסלול הקודם (index.html)</h4>
+          <ul>
+            <li>הקלדה ידנית של 14 שדות שונים.</li>
+            <li>אימות SMS באמצעות קוד OTP.</li>
+            <li>הקלדה כפולה של כתובת, קריאת מונה ופרטי משכיר.</li>
+            <li>סרבול וזמן מילוי ארוך (10-15 דקות).</li>
+          </ul>
+        </div>
+
+        <div class="compare-box new">
+          <h4 style="color: #15803d;">✅ המסלול החכם (update.html)</h4>
+          <ul>
+            <li><strong>4 שדות בלבד להזנה</strong> – השאר נשלף מהקבצים.</li>
+            <li><strong>ללא צורך בקוד OTP</strong> – אימות מהיר ומיידי.</li>
+            <li>שליפה אוטומטית של כתובת הנכס, מונה ופרטי משכיר.</li>
+            <li>תהליך ממוקד ושיחתי בפחות מ-2 דקות.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
