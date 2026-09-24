@@ -3,26 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>החלפת משלמים בדירה | תאגיד מי רמת גן</title>
-  <meta name="description" content="מערכת דיגיטלית חכמה, מהירה ופשוטה להחלפת משלמים בחשבון המים - מי רמת גן">
-  <link rel="stylesheet" href="css/styles.css">
+  <title>החלפת משלמים בדיאלוג חכם | תאגיד מי רמת גן</title>
+  <meta name="description" content="מערכת דיגיטלית חכמה, מהירה ופשוטה להחלפת משלמים - שיחה אישית וחילוץ אוטומטי">
+  <link rel="stylesheet" href="css/styles.css?v=20260924_1126">
+  <style>
+    /* Conversational UI Enhancements */
+    .chat-bubble-intro {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-600), var(--teal-600));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    }
+    .chat-bubble-content h3 {
+      font-size: 0.96rem;
+      color: var(--primary-900);
+      margin-bottom: 0.25rem;
+    }
+    .chat-bubble-content p {
+      font-size: 0.84rem;
+      color: var(--slate-600);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .conversational-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .conversational-sub {
+      font-size: 0.76rem;
+      font-weight: normal;
+      color: var(--slate-500);
+      margin-right: 0.35rem;
+    }
+    .doc-guidance-card {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .doc-guidance-card:hover {
+      border-color: var(--primary-400);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+    }
+    .doc-sample-img-container {
+      width: 100%;
+      height: 115px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #f1f5f9;
+      border: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .doc-sample-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .extracted-highlight-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .dialogue-step-title {
+      font-size: 1.2rem;
+      color: var(--slate-900);
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+    }
+    .dialogue-step-desc {
+      font-size: 0.88rem;
+      color: var(--slate-600);
+      margin-bottom: 1.25rem;
+    }
+    .data-comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.25rem;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1.5px solid var(--slate-200);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+    .data-comparison-table th,
+    .data-comparison-table td {
+      padding: 0.8rem 1rem;
+      font-size: 0.88rem;
+      text-align: right;
+      border-bottom: 1px solid var(--slate-100);
+      vertical-align: middle;
+    }
+    .data-comparison-table tr:last-child th,
+    .data-comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+    .data-comparison-table th {
+      background: #f8fafc;
+      color: var(--slate-700);
+      font-weight: 700;
+      width: 22%;
+      white-space: nowrap;
+      border-left: 1px solid var(--slate-100);
+    }
+    .data-comparison-table td {
+      color: var(--slate-900);
+    }
+    .data-comparison-table tr:hover td {
+      background: #f8fafc;
+    }
+  </style>
   <script>
-    window.goToStep = function(stepIndex) {
-      if (window.appState) {
-        window.appState.wizardStep = stepIndex;
-      }
-      document.querySelectorAll('.wizard-step-panel').forEach(function(p) {
-        p.style.display = 'none';
-      });
-      var target = document.getElementById('wizard-step-' + stepIndex);
-      if (target) {
-        target.style.display = 'block';
-      }
-      if (window.updateWizardUI) {
-        window.updateWizardUI();
-      }
-    };
-
     window.selectActionCard = function(cardElement) {
       if (!cardElement) return;
       var grid = cardElement.closest('.options-grid, .roles-grid') || cardElement.parentElement;
@@ -46,15 +171,15 @@
         </svg>
       </div>
       <div class="brand-text">
-        <h1>מי רמת גן • שירות דיגיטלי</h1>
-        <p>החלפת משלמים בנכס</p>
+        <h1>מי רמת גן • שירות דיגיטלי אישי</h1>
+        <p>החלפת משלמים בשיחה פשוטה וחילוץ חכם</p>
       </div>
     </div>
 
     <div class="header-actions">
       <div class="active-mode-badge" id="activeModeBadge">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        מסע נועה (טופס תושב)
+        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        דיאלוג אישי חכם
       </div>
 
       <!-- Discreet 3-dots Peer Review Navigation Menu -->
@@ -70,7 +195,7 @@
         <div class="dropdown-header">ניווט בדיקת עמיתים (Peer Review)</div>
         <button class="dropdown-item active" data-view-target="noa-wizard">
           <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          1. מסע נועה (טופס הגשה עצמאית)
+          1. מסלול דיאלוג חכם (ממשק תושב)
         </button>
         <button class="dropdown-item" data-view-target="sms-completion">
           <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -85,13 +210,13 @@
           4. דשבורד מנהל תפעול (Dashboard)
         </button>
         <div class="dropdown-divider"></div>
-        <a href="update.html" class="dropdown-item" style="color: var(--teal-700); text-decoration: none;">
-          <svg width="16" height="16" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          ⚡ מעבר לגרסה החכמה המקוצרת (update.html)
-        </a>
-        <a href="explanation.html" class="dropdown-item" style="color: var(--primary-700); text-decoration: none;">
+        <a href="explanation.html" class="dropdown-item" style="color: var(--teal-700); text-decoration: none;">
           <svg width="16" height="16" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           📄 מסמך הסבר ועקרונות (explanation.html)
+        </a>
+        <a href="legacy.html" class="dropdown-item" style="color: var(--primary-700); text-decoration: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+          ⏪ צפייה בתהליך הישן (legacy.html)
         </a>
         <button class="dropdown-item" id="resetSimulationBtn" style="color: var(--danger-600);">
           <svg width="16" height="16" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
@@ -104,54 +229,60 @@
   <main class="main-wrapper">
 
     <!-- ========================================== -->
-    <!-- MODULE 1: NOA'S JOURNEY (WIZARD)           -->
+    <!-- MODULE 1: CONVERSATIONAL SMART WIZARD      -->
     <!-- ========================================== -->
     <div id="view-noa-wizard" class="view-panel active">
 
-      <!-- Visual Step Progress Tracker -->
+      <!-- Conversational Progress Tracker (6 Steps) -->
       <div class="progress-container">
         <div class="progress-header">
-          <span class="progress-title">התקדמות בבקשה</span>
+          <span class="progress-title">התקדמות בדיאלוג</span>
           <span class="progress-percent" id="wizardProgressPercent"><span dir="ltr" id="progressPercentNum">0%</span> הושלמו</span>
         </div>
         <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="wizardProgressFill" style="width: 10%;"></div>
+          <div class="progress-bar-fill" id="wizardProgressFill" style="width: 0%;"></div>
         </div>
-        <div class="steps-indicator">
+        <div class="steps-indicator" style="grid-template-columns: repeat(6, 1fr);">
           <div class="step-item active" onclick="goToStep(0)">
             <div class="step-bullet">1</div>
-            <span>בחירה והכנה</span>
+            <span>בחירת מסלול</span>
+          </div>
+          <div class="step-item" onclick="goToStep(1)">
+            <div class="step-bullet">2</div>
+            <span>מי מגיש?</span>
+          </div>
+          <div class="step-item" onclick="goToStep(2)">
+            <div class="step-bullet">3</div>
+            <span>מסמכים להכנה</span>
           </div>
           <div class="step-item" onclick="goToStep(3)">
-            <div class="step-bullet">2</div>
-            <span>פרטי זיהוי</span>
+            <div class="step-bullet">4</div>
+            <span>איך קוראים לך?</span>
           </div>
           <div class="step-item" onclick="goToStep(4)">
-            <div class="step-bullet">3</div>
-            <span>אימות קשר</span>
+            <div class="step-bullet">5</div>
+            <span>העלאה וחילוץ</span>
           </div>
           <div class="step-item" onclick="goToStep(5)">
-            <div class="step-bullet">4</div>
-            <span>פרטי הנכס</span>
-          </div>
-          <div class="step-item" onclick="goToStep(6)">
-            <div class="step-bullet">5</div>
-            <span>מונה ומסמכים</span>
-          </div>
-          <div class="step-item" onclick="goToStep(7)">
             <div class="step-bullet">6</div>
             <span>סיכום וחתימה</span>
           </div>
         </div>
       </div>
 
-      <!-- STEP 0: Action Selection (Hover ? on title for explanation) -->
+      <!-- STEP 0: Action Selection (Conversational) -->
       <div id="wizard-step-0" class="wizard-step-panel">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>שלום! מה ברצונך לעשות?</h2>
-            <p>בחרו את סוג העדכון המבוקש</p>
+          <div class="chat-bubble-intro">
+            <div class="chat-avatar">💧</div>
+            <div class="chat-bubble-content">
+              <h3>שלום! נעים להכיר, מה נרצה לעשות היום?</h3>
+              <p>נעביר את חשבון המים בקלות, במהירות ובשיחה קצרה – ללא צורך בהקלדה כפולה של פרטים שמופיעים בחוזה.</p>
+            </div>
           </div>
+
+          <div class="dialogue-step-title">באיזה עדכון מדובר?</div>
+          <div class="dialogue-step-desc">בחרו את הפעולה המתאימה ונמשיך מיד:</div>
 
           <div class="options-grid">
             <!-- Option 1: Start Tenancy (Active) -->
@@ -160,16 +291,16 @@
                 <svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
               </div>
               <div class="card-title-row">
-                <h3 style="font-size: 1rem;">תחילת שכירות בדירה</h3>
+                <h3 style="font-size: 1rem;">אני נכנס/ת לדירה שכורה חדשה</h3>
                 <div class="tooltip-trigger" onclick="event.stopPropagation()">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">תחילת שכירות בדירה</div>
-                    נכנסים לדירה שכורה חדשה ורוצים להעביר את חשבון המים על שמכם מיום הכניסה שסוכם בחוזה.
+                    נרשום את חשבון המים על שמכם מיום תחילת השכירות שנקבע בחוזה.
                   </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); selectActionCard(this.closest('.selection-card')); goToStep(1);" style="width: 100%; margin-top: 0.25rem;">המשך ←</button>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); selectActionCard(this.closest('.selection-card')); goToStep(1);" style="width: 100%; margin-top: 0.35rem;">בואו נתחיל ←</button>
             </div>
 
             <!-- Option 2: End Tenancy -->
@@ -178,46 +309,52 @@
                 <svg width="22" height="22" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
               </div>
               <div class="card-title-row">
-                <h3 style="font-size: 1rem;">סיום שכירות ויציאה</h3>
+                <h3 style="font-size: 1rem;">אני מסיים/ת שכירות ועוזב/ת דירה</h3>
                 <div class="tooltip-trigger" onclick="event.stopPropagation()">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">סיום שכירות ויציאה</div>
-                    עוזבים דירה שכורה ומעבירים את החשבון בחזרה לבעלי הנכס או לדיירים הבאים.
+                    נעביר את חשבון המים בחזרה לבעלי הנכס.
                   </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); selectActionCard(this.closest('.selection-card')); goToStep(1);" style="width: 100%; margin-top: 0.25rem;">המשך ←</button>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); selectActionCard(this.closest('.selection-card')); goToStep(1);" style="width: 100%; margin-top: 0.35rem;">בואו נתחיל ←</button>
             </div>
 
-            <!-- Option 3: Sale/Purchase -->
-            <div class="selection-card" onmouseenter="this.style.zIndex='99999'" onmouseleave="this.style.zIndex=''" onclick="selectActionCard(this); goToStep(1);">
+            <!-- Option 3: Sale / Purchase of Property (Inactive Prototype) -->
+            <div class="selection-card" onmouseenter="this.style.zIndex='99999'" onmouseleave="this.style.zIndex=''" onclick="handleInactiveActionCard(event, this);">
               <div class="card-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
               </div>
               <div class="card-title-row">
-                <h3 style="font-size: 1rem;">מכירה או קניית נכס</h3>
+                <h3 style="font-size: 1rem;">קנייה או מכירה של דירה (בעלות)</h3>
                 <div class="tooltip-trigger" onclick="event.stopPropagation()">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
-                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">מכירה או קניית נכס</div>
-                    העברת בעלות קבועה על הנכס ברישומי התאגיד בין מוכרים לקונים.
+                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">העברת בעלות בטאבו</div>
+                    העברת חשבון מים בעקבות עסקת מכר או רכישת נכס (מסלול זה בפיתוח).
                   </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); selectActionCard(this.closest('.selection-card')); goToStep(1);" style="width: 100%; margin-top: 0.25rem;">המשך ←</button>
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); handleInactiveActionCard(event, this.closest('.selection-card'));" style="width: 100%; margin-top: 0.35rem;">בואו נתחיל ←</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- STEP 1: Role Selection (Hover ? for explanation) -->
+      <!-- STEP 1: Role Selection (Conversational) -->
       <div id="wizard-step-1" class="wizard-step-panel" style="display: none;">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>מי מגיש את הבקשה?</h2>
-            <p>בחרו את הגורם שממלא את הטופס</p>
+          <div class="chat-bubble-intro">
+            <div class="chat-avatar">👤</div>
+            <div class="chat-bubble-content">
+              <h3>מי ממלא את הבקשה עבור הנכס?</h3>
+              <p>בחרו האם אתם מגישים את הבקשה בעצמכם או כמיופה כוח מטעמם של הדיירים.</p>
+            </div>
           </div>
+
+          <div class="dialogue-step-title">מי מגיש את הבקשה?</div>
+          <div class="dialogue-step-desc">בחרו את הגורם שממלא את הטופס:</div>
 
           <div class="roles-grid">
             <div class="selection-card selected" onmouseenter="this.style.zIndex='99999'" onmouseleave="this.style.zIndex=''" onclick="selectActionCard(this); goToStep(2);">
@@ -230,7 +367,7 @@
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">אני בעצמי</div>
-                    מילוי עצמי של הדייר הנכנס. הפרטים שתמלאו יישמרו ישירות ולא תצטרכו להקלידם שוב.
+                    מילוי עצמי של הדייר הנכנס. הפרטים שתמלאו יישמרו ישירות ללא צורך בהקלדה כפולה.
                   </div>
                 </div>
               </div>
@@ -256,19 +393,25 @@
           </div>
 
           <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(0)">→ חזרה</button>
-            <button class="btn btn-primary btn-sm" onclick="goToStep(2)">המשך להכנה ←</button>
+            <button class="btn btn-secondary btn-sm" onclick="goToStep(0)">→ חזרה לבחירת פעולה</button>
+            <button class="btn btn-primary btn-sm" onclick="goToStep(2)">המשך לרשימת מסמכים ←</button>
           </div>
         </div>
       </div>
 
-      <!-- STEP 2: Pre-flight Preparation Checklist (With rich image previews in hover popovers) -->
+      <!-- STEP 2: Pre-flight Preparation Checklist -->
       <div id="wizard-step-2" class="wizard-step-panel" style="display: none;">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>מה כדאי להכין מראש?</h2>
-            <p>רשימת המסמכים המלאה לסיום מהיר של הבקשה בדקות בודדות</p>
+          <div class="chat-bubble-intro">
+            <div class="chat-avatar">📄</div>
+            <div class="chat-bubble-content">
+              <h3>אילו מסמכים כדאי להכין מראש? הנה הרשימה המלאה עם דוגמאות:</h3>
+              <p>המערכת תחלץ מהם אוטומטית את רוב נתוני הנכס והקריאה. רחפו או לחצו על הסימן <strong>?</strong> כדי לראות תמונת דוגמה של כל מסמך ואיך לצלמו בצורה מיטבית.</p>
+            </div>
           </div>
+
+          <div class="dialogue-step-title">מה כדאי להכין לפני שנתחיל?</div>
+          <div class="dialogue-step-desc">וודאו שהתמונות ברורות, מוארות היטב ושכל הפרטים קריאים:</div>
 
           <div class="checklist-container">
             <!-- Checklist Item 1: Contract -->
@@ -285,7 +428,7 @@
                       <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">קובץ PDF או צילום ברור של עמודי החוזה: פרטי הצדדים (השוכר והמשכיר), תאריך תחילת השכירות ועמוד החתימות.</div>
                       <div class="doc-visual-illustration">
                         <img src="assets/contract_sample.jpg" alt="דוגמה לחוזה שכירות חתום" class="doc-preview-img">
-                        <div style="font-size: 0.76rem; color: var(--slate-600); width: 100%;">עמוד ראשון, תאריכי השכירות ועמוד החתימות של שני הצדדים.</div>
+                        <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">דוגמה: עמוד ראשון, תאריכי השכירות ועמוד החתימות.</div>
                       </div>
                     </div>
                   </div>
@@ -307,7 +450,7 @@
                       <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">צילום תעודת זהות וספח פתוח של מגיש הבקשה ושל בעל הנכס (המשכיר), כאשר כל הפרטים והתמונות קריאים בבירור.</div>
                       <div class="doc-visual-illustration">
                         <img src="assets/id_sample.jpg" alt="דוגמה לתעודת זהות וספח" class="doc-preview-img">
-                        <div style="font-size: 0.76rem; color: var(--slate-600); width: 100%;">תעודה מונחת על שולחן וספח פתוח שלך ושל המשכיר (בעל הנכס).</div>
+                        <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">דוגמה: תעודה מונחת על שולחן וספח פתוח.</div>
                       </div>
                     </div>
                   </div>
@@ -329,7 +472,7 @@
                       <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">צילום ברור של לוח שעון המים המציג את כל ספרות הקריאה (השחורות והאדומות) ומספר המונה ביום הכניסה לדירה.</div>
                       <div class="doc-visual-illustration">
                         <img src="assets/meter_sample.jpg" alt="דוגמה לשעון מונה מים" class="doc-preview-img">
-                        <div style="font-size: 0.76rem; color: var(--slate-600); width: 100%;">ספרות שעון המים ביום קבלת המפתח (ספרות שחורות ואדומות).</div>
+                        <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">דוגמה: ספרות שעון המים (שחורות ואדומות).</div>
                       </div>
                     </div>
                   </div>
@@ -347,11 +490,11 @@
                   <div class="tooltip-trigger" tabindex="0">
                     <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     <div class="tooltip-popup">
-                      <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">איפה זה מופיע בחשבון המים?</div>
+                      <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">חשבון מים קודם / מספר נכס</div>
                       <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">מספר המופיע בחלקו העליון של חשבון המים של הנכס (תחת 'מספר כרטיס מים' או 'מספר נכס').</div>
                       <div class="doc-visual-illustration">
                         <img src="assets/water_bill_sample.jpg" alt="דוגמה לחשבון מים" class="doc-preview-img">
-                        <div style="font-size: 0.76rem; color: var(--slate-600); width: 100%;">בראש החשבון מימין: "מספר כרטיס מים" ו"מספר נכס".</div>
+                        <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">בראש החשבון מימין: "מספר כרטיס מים" ו"מספר נכס".</div>
                       </div>
                     </div>
                   </div>
@@ -359,23 +502,21 @@
               </div>
             </div>
 
-            <!-- Checklist Item 5: Additional Adults Appendix for Water Quota -->
+            <!-- Checklist Item 5: Additional Adults Sefach -->
             <div class="checklist-item" onmouseenter="this.style.zIndex='99999'" onmouseleave="this.style.zIndex=''">
               <div class="item-number">5</div>
               <div class="item-content">
                 <div class="item-title-row">
-                  <h4>ספחי ת.ז של בגירים נוספים בדירה (הנחת מים)</h4>
+                  <h4>ספחי ת.ז של דיירים נוספים מעל גיל 18 בדירה</h4>
                   <span class="status-pill warning" style="font-size: 0.7rem;">רשות להנחה</span>
                   <div class="tooltip-trigger" tabindex="0">
                     <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     <div class="tooltip-popup">
                       <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">ספחי דיירים נוספים בדירה</div>
-                      <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">
-                        צילום ספח תעודת זהות פתוח של כל בגיר מעל גיל 18 המתגורר בנכס, המציג את כתובת המגורים המעודכנת (ניתן לצרף מספר ספחים).
-                      </div>
+                      <div style="font-size: 0.78rem; color: var(--slate-700); line-height: 1.45; margin-bottom: 0.35rem;">צילום ספח תעודת זהות פתוח של כל בגיר מעל גיל 18 המתגורר בנכס, המציג את כתובת המגורים המעודכנת.</div>
                       <div class="doc-visual-illustration">
                         <img src="assets/id_sample.jpg" alt="דוגמה לספחי דיירים נוספים" class="doc-preview-img">
-                        <div style="font-size: 0.76rem; color: var(--slate-600); width: 100%;">ספח פתוח עם כתובת המגורים המעודכנת.</div>
+                        <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">ספח פתוח עם כתובת המגורים המעודכנת.</div>
                       </div>
                     </div>
                   </div>
@@ -384,28 +525,36 @@
             </div>
           </div>
 
-          <!-- Clean Prompt -->
-          <p style="font-size: 0.92rem; font-weight: 600; color: var(--primary-700); margin: 0.85rem 0 0.35rem 0;">הכל מוכן? בואו נתחיל במילוי הפרטים.</p>
-
           <div class="button-row">
             <button class="btn btn-secondary btn-sm" onclick="goToStep(1)">→ חזרה לבחירת מגיש</button>
-            <button class="btn btn-primary btn-sm" onclick="goToStep(3)">בואו נתחיל! ←</button>
+            <button class="btn btn-primary btn-sm" onclick="goToStep(3)">המסמכים מוכנים, בואו נתחיל להזין פרטים ←</button>
           </div>
         </div>
       </div>
 
-      <!-- STEP 3: Personal Identification -->
+      <!-- STEP 3: Conversational Identification & Contact (NO OTP!) -->
       <div id="wizard-step-3" class="wizard-step-panel" style="display: none;">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>שלב 1: פרטי זיהוי אישיים</h2>
-            <p>הקלידו את פרטי הזיהוי כפי שמופיעים בתעודת הזהות</p>
+          <div class="chat-bubble-intro">
+            <div class="chat-avatar">👤</div>
+            <div class="chat-bubble-content">
+              <h3>נעים להכיר! איך קוראים לך ואיך נוכל לעדכן אותך?</h3>
+              <p>הקלידו את הפרטים הבסיסיים שלכם כדי שנוכל לשייך את הבקשה ולשלוח אליכם את האישור החתום (ללא צורך בקוד אימות OTP).</p>
+            </div>
           </div>
 
           <div class="form-grid">
+            <!-- First Name -->
             <div class="form-group">
-              <label class="form-label" for="inputFirstName">
-                שם פרטי <span class="required-star">*</span>
+              <label class="conversational-label" for="inputFirstName">
+                מה שמך הפרטי? <span class="required-star">*</span>
+                <div class="tooltip-trigger" tabindex="0">
+                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  <div class="tooltip-popup">
+                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">שם פרטי</div>
+                    שם פרטי בעברית כפי שמופיע בתעודת הזהות הרשמית של מגיש הבקשה.
+                  </div>
+                </div>
               </label>
               <div class="input-wrapper">
                 <input type="text" id="inputFirstName" class="form-input" placeholder="למשל: נועה" autocomplete="off">
@@ -416,9 +565,17 @@
               <div class="field-error-msg" id="firstNameErrorMsg"></div>
             </div>
 
+            <!-- Last Name -->
             <div class="form-group">
-              <label class="form-label" for="inputLastName">
-                שם משפחה <span class="required-star">*</span>
+              <label class="conversational-label" for="inputLastName">
+                ומה שם המשפחה? <span class="required-star">*</span>
+                <div class="tooltip-trigger" tabindex="0">
+                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  <div class="tooltip-popup">
+                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">שם משפחה</div>
+                    שם משפחה כפי שמופיע בתעודת הזהות.
+                  </div>
+                </div>
               </label>
               <div class="input-wrapper">
                 <input type="text" id="inputLastName" class="form-input" placeholder="למשל: לוי" autocomplete="off">
@@ -430,17 +587,18 @@
             </div>
           </div>
 
-          <div class="form-grid full-width">
+          <div class="form-grid">
+            <!-- ID Number -->
             <div class="form-group">
-              <label class="form-label" for="inputIdNumber">
-                מספר תעודת זהות (9 ספרות) <span class="required-star">*</span>
+              <label class="conversational-label" for="inputIdNumber">
+                מה מספר תעודת הזהות שלך? <span class="required-star">*</span>
                 <div class="tooltip-trigger" tabindex="0">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
-                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">איפה למצוא את מספר הזהות?</div>
+                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">איפה למצוא בתעודת הזהות?</div>
                     <div class="doc-visual-illustration">
-                      <img src="assets/id_sample.jpg" alt="דוגמה לתעודת זהות" class="doc-preview-img" style="height: 110px;">
-                      <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">9 ספרות כולל ספרת ביקורת. אם המספר קצר יותר, יש להשלים אפסים משמאל.</div>
+                      <img src="assets/id_sample.jpg" alt="דוגמה לתעודת זהות" class="doc-preview-img" style="height: 100px;">
+                      <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">9 ספרות רשומות בחזית התעודה.</div>
                     </div>
                   </div>
                 </div>
@@ -451,32 +609,16 @@
               </div>
               <div class="field-error-msg" id="idErrorMsg"></div>
             </div>
-          </div>
 
-          <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(2)">→ חזרה להכנה</button>
-            <button class="btn btn-primary btn-sm" onclick="handleStep3Next()">המשך לאימות פרטי קשר ←</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 4: Contact & OTP Verification -->
-      <div id="wizard-step-4" class="wizard-step-panel" style="display: none;">
-        <div class="card">
-          <div class="card-header-clean">
-            <h2>שלב 2: פרטי התקשרות ואימות מהיר</h2>
-            <p>לעדכון שוטף בסטטוס הבקשה וקבלת אישור החלפת המשלמים הסופי</p>
-          </div>
-
-          <div class="form-grid">
+            <!-- Phone Number -->
             <div class="form-group">
-              <label class="form-label" for="inputPhone">
-                טלפון נייד (10 ספרות, מתחיל ב-05) <span class="required-star">*</span>
+              <label class="conversational-label" for="inputPhone">
+                לאיזה מספר נייד נשלח עדכונים ואישור? <span class="required-star">*</span>
                 <div class="tooltip-trigger" tabindex="0">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">עדכונים ב-SMS</div>
-                    למספר זה יישלחו קוד האימות, הודעת אישור על פתיחת הפנייה והודעה כשהטיפול יסתיים.
+                    למספר זה יישלחו הודעת אישור על פתיחת הפנייה והודעה כשהטיפול יסתיים בהצלחה.
                   </div>
                 </div>
               </label>
@@ -486,10 +628,13 @@
               </div>
               <div class="field-error-msg" id="phoneErrorMsg"></div>
             </div>
+          </div>
 
+          <!-- Email -->
+          <div class="form-grid full-width">
             <div class="form-group">
-              <label class="form-label" for="inputEmail">
-                כתובת אימייל <span class="required-star">*</span>
+              <label class="conversational-label" for="inputEmail">
+                מה כתובת האימייל שלך לקבלת המסמכים החתומים? <span class="required-star">*</span>
                 <div class="tooltip-trigger" tabindex="0">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
@@ -506,193 +651,25 @@
             </div>
           </div>
 
-          <!-- Compact OTP Simulation Box -->
-          <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-top: 0.65rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <div>
-                <h4 style="font-size: 0.88rem; margin-bottom: 0.15rem;">אימות מהיר במסרון (קוד חד-פעמי)</h4>
-                <p style="font-size: 0.78rem; color: var(--slate-500);">נשלח קוד בן 4 ספרות לטלפון שהזנתם</p>
-              </div>
-              <button class="btn btn-outline-primary btn-sm" id="sendOtpBtn">שלחו לי קוד אימות</button>
-            </div>
-
-            <div id="otpInputSection" style="display: none; margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px dashed var(--slate-200);">
-              <div style="display: flex; align-items: center; gap: 0.65rem;">
-                <input type="text" id="inputOtpCode" class="form-input" style="max-width: 110px; text-align: center; font-size: 1.1rem; letter-spacing: 0.15em; font-family: monospace;" placeholder="1234" maxlength="4">
-                <button class="btn btn-primary btn-sm" id="verifyOtpBtn">אימות קוד</button>
-                <span style="font-size: 0.76rem; color: var(--teal-600); font-weight: 600;">(הקוד לסימולציה הוא 1234)</span>
-              </div>
-            </div>
-
-            <div id="otpSuccessNotice" style="display: none; align-items: center; gap: 0.4rem; margin-top: 0.5rem; color: var(--teal-700); font-weight: 600; font-size: 0.82rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              הטלפון אומת בהצלחה!
-            </div>
-          </div>
-
           <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(3)">→ חזרה לפרטי זיהוי</button>
-            <button class="btn btn-primary btn-sm" onclick="handleStep4Next()">המשך לפרטי הנכס ←</button>
+            <button class="btn btn-secondary btn-sm" onclick="goToStep(2)">→ חזרה למסמכים להכנה</button>
+            <button class="btn btn-primary btn-sm" onclick="handleSmartStep3Next()">המשך להעלאת מסמכים ←</button>
           </div>
         </div>
       </div>
 
-      <!-- STEP 5: Property Details & Water Card -->
-      <div id="wizard-step-5" class="wizard-step-panel" style="display: none;">
+      <!-- STEP 4: Smart Upload & Instant Extraction Cards -->
+      <div id="wizard-step-4" class="wizard-step-panel" style="display: none;">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>שלב 3: פרטי הדירה ותאריך כניסה</h2>
-            <p>הזנת כתובת הנכס, תאריך תחילת החזקה ומספר כרטיס מים</p>
-          </div>
-
-          <!-- Property Address -->
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-            <h3 style="font-size: 0.95rem; color: var(--slate-900); margin: 0;">כתובת הדירה</h3>
-          </div>
-
-          <div class="form-grid" style="grid-template-columns: 1.2fr 1.5fr 0.65fr 0.65fr;">
-            <div class="form-group" style="position: relative;">
-              <label class="form-label" for="inputCity">עיר <span class="required-star">*</span></label>
-              <div class="input-wrapper">
-                <input type="text" id="inputCity" class="form-input" value="" placeholder="למשל: רמת גן" autocomplete="off">
-                <div class="input-feedback-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path></svg>
-                </div>
-              </div>
-              <div class="autocomplete-menu" id="cityAutocompleteMenu"></div>
-              <div class="field-error-msg" id="cityErrorMsg"></div>
-            </div>
-
-            <div class="form-group" style="position: relative;">
-              <label class="form-label" for="inputStreet">רחוב <span class="required-star">*</span></label>
-              <div class="input-wrapper">
-                <input type="text" id="inputStreet" class="form-input" value="" placeholder="למשל: ביאליק" autocomplete="off">
-                <div class="input-feedback-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
-                </div>
-              </div>
-              <div class="autocomplete-menu" id="streetAutocompleteMenu"></div>
-              <div class="field-error-msg" id="streetErrorMsg"></div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputHouse">מס' בית <span class="required-star">*</span></label>
-              <input type="text" id="inputHouse" class="form-input" value="" style="padding-left: 0.5rem;" placeholder="מספר">
-              <div class="field-error-msg" id="houseErrorMsg"></div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inputApt">דירה</label>
-              <input type="text" id="inputApt" class="form-input" value="" style="padding-left: 0.5rem;" placeholder="מספר">
+          <div class="chat-bubble-intro">
+            <div class="chat-avatar">⚡</div>
+            <div class="chat-bubble-content">
+              <h3>מעולה! כעת נעלה את המסמכים שהכנו:</h3>
+              <p>לחצו על כרטיסי ההעלאה. המערכת תסרוק ותחלץ מהם את הנתונים תוך שניות.</p>
             </div>
           </div>
 
-          <!-- Private house checkbox -->
-          <div style="margin-top: -0.35rem; margin-bottom: 0.75rem;">
-            <label style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--slate-600); cursor: pointer;">
-              <input type="checkbox" id="privateHouseCheckbox" style="accent-color: var(--primary-600);">
-              בית פרטי / צמוד קרקע (ללא מספר דירה)
-            </label>
-          </div>
-
-          <div style="height: 1px; background: var(--slate-100); margin: 0.75rem 0;"></div>
-
-          <!-- Entry Date & Water Card Number Grid -->
-          <div class="form-grid">
-            <!-- Entry Date -->
-            <div class="form-group">
-              <label class="form-label" for="inputEntryDate">
-                תאריך תחילת שכירות / כניסה <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
-                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  <div class="tooltip-popup">
-                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">תאריך הכניסה בחוזה</div>
-                    התאריך הרשום בחוזה השכירות כיום תחילת החזקה. ממועד זה ואילך יחויב החשבון על שמכם.
-                  </div>
-                </div>
-              </label>
-              <div class="input-wrapper">
-                <input type="date" id="inputEntryDate" class="form-input" value="" style="padding-left: 0.5rem;">
-              </div>
-              <div class="field-error-msg" id="entryDateErrorMsg"></div>
-            </div>
-
-            <!-- Water Card Number / Property Number -->
-            <div class="form-group">
-              <label class="form-label" for="inputWaterCardNum">
-                מספר כרטיס מים / מספר נכס (רשות)
-                <div class="tooltip-trigger" tabindex="0">
-                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  <div class="tooltip-popup">
-                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">איפה למצוא בחשבון המים?</div>
-                    <div class="doc-visual-illustration">
-                      <img src="assets/water_bill_sample.jpg" alt="דוגמה לחשבון מים" class="doc-preview-img" style="height: 110px;">
-                      <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">מופיע בראש החשבון של המשכיר מימין. מסייע לאתר את המונה ברגע.</div>
-                    </div>
-                  </div>
-                </div>
-              </label>
-              <div class="input-wrapper">
-                <input type="text" id="inputWaterCardNum" class="form-input" placeholder="למשל: 1048291" autocomplete="off">
-              </div>
-            </div>
-          </div>
-
-          <!-- Landlord Details Section -->
-          <div style="margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--slate-100);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.45rem;">
-              <h3 style="font-size: 0.92rem; color: var(--slate-900); margin: 0;">פרטי המשכיר / בעל הנכס (הדייר היוצא)</h3>
-            </div>
-            
-            <div class="form-grid" style="grid-template-columns: 1.2fr 1fr 1fr;">
-              <div class="form-group">
-                <label class="form-label" for="inputLandlordName">שם מלא של המשכיר <span class="required-star">*</span></label>
-                <input type="text" id="inputLandlordName" class="form-input" placeholder="למשל: דוד כהן" autocomplete="off">
-                <div class="field-error-msg" id="landlordNameErrorMsg"></div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inputLandlordId">
-                  ת.ז של המשכיר <span class="required-star">*</span>
-                  <div class="tooltip-trigger" tabindex="0">
-                    <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    <div class="tooltip-popup">
-                      <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">תעודת זהות של בעל הנכס</div>
-                      מופיע בחוזה השכירות ובתעודת הזהות של המשכיר.
-                    </div>
-                  </div>
-                </label>
-                <div class="input-wrapper">
-                  <input type="text" id="inputLandlordId" class="form-input" placeholder="9 ספרות" maxlength="9" autocomplete="off">
-                  <div class="input-feedback-icon" id="landlordIdFeedbackIcon" style="display: none;"></div>
-                </div>
-                <div class="field-error-msg" id="landlordIdErrorMsg"></div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="inputLandlordPhone">טלפון המשכיר (רשות)</label>
-                <input type="tel" id="inputLandlordPhone" class="form-input" placeholder="למשל: 050-1234567" autocomplete="off">
-                <div class="field-error-msg" id="landlordPhoneErrorMsg"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(4)">→ חזרה לפרטי קשר</button>
-            <button class="btn btn-primary btn-sm" onclick="handleStep5Next()">המשך לקריאת מונה ומסמכים ←</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 6: Water Meter & Smart Document Uploads -->
-      <div id="wizard-step-6" class="wizard-step-panel" style="display: none;">
-        <div class="card">
-          <div class="card-header-clean">
-            <h2>שלב 4: קריאת מונה מים והעלאת מסמכים</h2>
-            <p>העלאה מהירה ובדיקה אוטומטית בזמן אמת</p>
-          </div>
-
-          <!-- Refined & Delicate Document Intake Status Bar - Order Matches Document Uploads Exactly -->
+          <!-- Document Intake Checklist Bar (Order matches upload cards) -->
           <div class="delicate-doc-checklist" id="delicateDocChecklist">
             <div class="delicate-checklist-title">
               <span class="pulse-dot"></span>
@@ -700,7 +677,6 @@
               <strong id="checklistOverallSummary" style="font-weight: 600; margin-right: auto; color: var(--primary-700);">ממתין להעלאת מסמכים</strong>
             </div>
             <div class="delicate-checklist-items">
-              <!-- 1. Meter Photo -->
               <div class="delicate-check-item" id="checkRowMeterPhoto">
                 <div class="delicate-item-icon">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
@@ -709,7 +685,6 @@
                 <span class="delicate-item-badge pending" id="statusMeterPhoto">טרם הועלה</span>
               </div>
 
-              <!-- 2. Contract -->
               <div class="delicate-check-item" id="checkRowContract">
                 <div class="delicate-item-icon">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -718,16 +693,14 @@
                 <span class="delicate-item-badge pending" id="statusContract">טרם הועלה</span>
               </div>
 
-              <!-- 3. Landlord ID -->
               <div class="delicate-check-item" id="checkRowOwnerId">
                 <div class="delicate-item-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle></svg>
                 </div>
                 <span class="delicate-item-name">3. ת.ז משכיר</span>
                 <span class="delicate-item-badge pending" id="statusOwnerId">טרם הועלה</span>
               </div>
 
-              <!-- 4. Tenant ID -->
               <div class="delicate-check-item" id="checkRowTenantId">
                 <div class="delicate-item-icon">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -736,10 +709,9 @@
                 <span class="delicate-item-badge pending" id="statusTenantId">טרם הועלה</span>
               </div>
 
-              <!-- 5. Additional Sefach -->
               <div class="delicate-check-item optional" id="checkRowAdditional">
                 <div class="delicate-item-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
                 </div>
                 <span class="delicate-item-name">5. ספחי דיירים</span>
                 <span class="delicate-item-badge optional" id="statusAdditional">רשות</span>
@@ -747,36 +719,17 @@
             </div>
           </div>
 
-          <!-- Water Meter Section -->
-          <div class="meter-section-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.85rem 0; align-items: start;">
-            <div class="form-group">
-              <label class="form-label" for="inputMeterReading">
-                קריאת מונה מים מיום הכניסה (מ"ק) <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
-                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  <div class="tooltip-popup">
-                    <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">איך קוראים את שעון המים?</div>
-                    <div class="doc-visual-illustration">
-                      <img src="assets/meter_sample.jpg" alt="דוגמה למונה מים" class="doc-preview-img" style="height: 110px;">
-                      <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">מעתיקים את כל הספרות שמופיעות על השעון (הספרות השחורות והאדומות).</div>
-                    </div>
-                  </div>
-                </div>
-              </label>
-              <div class="input-wrapper">
-                <input type="text" id="inputMeterReading" class="form-input" value="00384.2" placeholder="למשל: 00384.2">
-                <div class="input-feedback-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="7" r="7"></circle></svg>
-                </div>
+          <!-- Single Column Upload Cards List -->
+          <div style="display: flex; flex-direction: column; gap: 0.65rem; margin: 0.85rem 0;">
+            
+            <!-- 1. Meter Photo Upload -->
+            <div class="upload-box-compact" id="meterPhotoUploadBox">
+              <div class="upload-compact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path></svg>
               </div>
-              <div class="field-error-msg" id="meterErrorMsg"></div>
-            </div>
-
-            <!-- Meter Photo Upload (Compact) -->
-            <div>
-              <label class="form-label">
-                צילום שעון מונה המים <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
+              <div class="upload-compact-content" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="upload-compact-title">1. העלו צילום של שעון מונה המים <span class="required-star">*</span></span>
+                <div class="tooltip-trigger" tabindex="0" onclick="event.stopPropagation();">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">צילום ברור של השעון</div>
@@ -786,28 +739,18 @@
                     </div>
                   </div>
                 </div>
-              </label>
-              <div class="upload-box-compact" id="meterPhotoUploadBox">
-                <div class="upload-compact-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path></svg>
-                </div>
-                <div class="upload-compact-content">
-                  <div class="upload-compact-title">העלאת צילום מונה</div>
-                  <div class="upload-compact-sub">לחצו לבחירת תמונה</div>
-                </div>
-                <div class="upload-compact-badge" id="meterPhotoBadge">העלאה +</div>
               </div>
+              <div class="upload-compact-badge" id="meterPhotoBadge">העלאה +</div>
             </div>
-          </div>
 
-          <!-- Compact 2x2 Grid for Other Documents -->
-          <div style="font-size: 0.85rem; font-weight: 700; color: var(--slate-800); margin: 0.65rem 0 0.45rem 0;">מסמכי ההתקשרות והזיהוי:</div>
-          <div class="docs-compact-grid">
-            <!-- 1. Contract Upload -->
-            <div class="doc-compact-slot">
-              <label class="form-label">
-                1. חוזה שכירות חתום <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
+            <!-- 2. Contract Upload -->
+            <div class="upload-box-compact" id="contractUploadBox">
+              <div class="upload-compact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </div>
+              <div class="upload-compact-content" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="upload-compact-title">2. העלו חוזה שכירות חתום <span class="required-star">*</span></span>
+                <div class="tooltip-trigger" tabindex="0" onclick="event.stopPropagation();">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">עמודי החוזה הנדרשים</div>
@@ -817,24 +760,18 @@
                     </div>
                   </div>
                 </div>
-              </label>
-              <div class="upload-box-compact" id="contractUploadBox">
-                <div class="upload-compact-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                </div>
-                <div class="upload-compact-content">
-                  <div class="upload-compact-title">חוזה שכירות</div>
-                  <div class="upload-compact-sub">PDF או תמונת עמודים</div>
-                </div>
-                <div class="upload-compact-badge" id="contractBadge">העלאה +</div>
               </div>
+              <div class="upload-compact-badge" id="contractBadge">העלאה +</div>
             </div>
 
-            <!-- 2. Landlord ID Upload -->
-            <div class="doc-compact-slot">
-              <label class="form-label">
-                2. ת.ז + ספח של המשכיר <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
+            <!-- 3. Landlord ID Upload -->
+            <div class="upload-box-compact" id="ownerIdUploadBox">
+              <div class="upload-compact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle></svg>
+              </div>
+              <div class="upload-compact-content" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="upload-compact-title">3. העלו ת.ז וספח של המשכיר <span class="required-star">*</span></span>
+                <div class="tooltip-trigger" tabindex="0" onclick="event.stopPropagation();">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">תעודת זהות וספח פתוח</div>
@@ -844,24 +781,18 @@
                     </div>
                   </div>
                 </div>
-              </label>
-              <div class="upload-box-compact" id="ownerIdUploadBox">
-                <div class="upload-compact-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle></svg>
-                </div>
-                <div class="upload-compact-content">
-                  <div class="upload-compact-title">ת.ז וספח משכיר</div>
-                  <div class="upload-compact-sub">צילום ברור ומלא</div>
-                </div>
-                <div class="upload-compact-badge" id="ownerIdBadge">העלאה +</div>
               </div>
+              <div class="upload-compact-badge" id="ownerIdBadge">העלאה +</div>
             </div>
 
-            <!-- 3. Tenant ID Upload -->
-            <div class="doc-compact-slot">
-              <label class="form-label">
-                3. ת.ז + ספח של השוכר/ת <span class="required-star">*</span>
-                <div class="tooltip-trigger" tabindex="0">
+            <!-- 4. Tenant ID Upload -->
+            <div class="upload-box-compact" id="tenantIdUploadBox">
+              <div class="upload-compact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <div class="upload-compact-content" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="upload-compact-title">4. העלו ת.ז וספח של השוכר/ת <span class="required-star">*</span></span>
+                <div class="tooltip-trigger" tabindex="0" onclick="event.stopPropagation();">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">תעודת זהות וספח של מגיש הבקשה</div>
@@ -871,156 +802,284 @@
                     </div>
                   </div>
                 </div>
-              </label>
-              <div class="upload-box-compact" id="tenantIdUploadBox">
-                <div class="upload-compact-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </div>
-                <div class="upload-compact-content">
-                  <div class="upload-compact-title">ת.ז וספח שוכר/ת</div>
-                  <div class="upload-compact-sub">של מגיש/ת הבקשה</div>
-                </div>
-                <div class="upload-compact-badge" id="tenantIdBadge">העלאה +</div>
               </div>
+              <div class="upload-compact-badge" id="tenantIdBadge">העלאה +</div>
             </div>
 
-            <!-- 4. Additional Adults ID / Sefach (Multiple Upload Support) -->
-            <div class="doc-compact-slot">
-              <label class="form-label">
-                4. ספחי בגירים נוספים (רשות)
-                <div class="tooltip-trigger" tabindex="0">
+          </div>
+
+          <!-- Divider & Spacing between Mandatory Docs (1-4) and Optional Doc (5) -->
+          <div style="margin-top: 1.5rem; padding-top: 1.15rem; border-top: 1.5px dashed var(--slate-200);">
+            <div style="font-size: 0.8rem; color: var(--primary-900); background: #f0f9ff; border: 1px solid #bae6fd; border-radius: var(--radius-sm); padding: 0.55rem 0.75rem; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.45rem;">
+              <span style="font-size: 1rem;">💡</span>
+              <span><strong>מומלץ כדי לחסוך בחשבון:</strong> צירוף ספח לכל בגיר מעל גיל 18 המתגורר בדירה מבטיח קבלת מכסת מים מוגדלת בתעריף המוזל.</span>
+            </div>
+
+            <!-- 5. Additional Sefach (Optional) -->
+            <div class="upload-box-compact" id="additionalIdUploadBox">
+              <div class="upload-compact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+              <div class="upload-compact-content" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="upload-compact-title">5. ספחי בגירים נוספים להנחת מים</span>
+                <span class="status-pill optional" style="font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.45rem; background: var(--slate-100); color: var(--slate-600); border-radius: 999px;">רשות</span>
+                <div class="tooltip-trigger" tabindex="0" onclick="event.stopPropagation();">
                   <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                   <div class="tooltip-popup">
                     <div style="font-weight: 700; color: var(--primary-700); margin-bottom: 0.25rem;">ספחי דיירים נוספים בדירה</div>
                     <div style="font-size: 0.76rem; color: var(--slate-700); line-height: 1.4; margin-bottom: 0.35rem;">
-                      צילום ספח תעודת זהות פתוח של כל בגיר מעל גיל 18 המתגורר בדירה (ניתן להעלות מספר ספחים).
+                      צילום ספח תעודת זהות פתוח של כל בגיר מעל גיל 18 המתגורר בדירה (ניתן לצרף מספר ספחים).
                     </div>
                     <div class="doc-visual-illustration">
-                      <img src="assets/id_sample.jpg" alt="דוגמה לספחי דיירים נוספים" class="doc-preview-img" style="height: 100px;">
+                      <img src="assets/israeli_biometric_id_sefach_v2.jpg" alt="דוגמה לספחי דיירים נוספים" class="doc-preview-img" style="height: 100px;">
                       <div style="font-size: 0.74rem; color: var(--slate-600); width: 100%;">ספח פתוח עם כתובת המגורים המעודכנת.</div>
                     </div>
                   </div>
                 </div>
-              </label>
-              <div class="upload-box-compact" id="additionalIdUploadBox">
-                <div class="upload-compact-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-                <div class="upload-compact-content">
-                  <div class="upload-compact-title">ספחי דיירים נוספים</div>
-                  <div class="upload-compact-sub" id="additionalSefachSubText">לחצו להוספת ספח</div>
-                </div>
-                <div class="upload-compact-badge optional" id="additionalIdBadge">+ הוסף ספח</div>
               </div>
+              <div class="upload-compact-badge optional" id="additionalIdBadge">+ הוסף ספח</div>
             </div>
-          </div>
 
-          <!-- Dynamic Multi-file List for Additional Sefach files -->
-          <div id="additionalSefachFilesList" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; background: var(--slate-50); border: 1px dashed var(--slate-200); border-radius: var(--radius-sm);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-700);">קבצי ספחים שצורפו:</span>
-              <button type="button" class="btn btn-secondary btn-sm" id="addMoreSefachBtn" style="font-size: 0.7rem; padding: 0.15rem 0.45rem;">+ הוסף ספח נוסף</button>
+            <!-- Dynamic Multi-file Chips for Additional Sefach -->
+            <div id="additionalSefachFilesList" style="display: none; margin-top: 0.4rem; padding: 0.4rem 0.6rem; background: var(--slate-50); border: 1px dashed var(--slate-200); border-radius: var(--radius-sm);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-700);">קבצי ספחים שצורפו:</span>
+                <button type="button" class="btn btn-secondary btn-sm" id="addMoreSefachBtn" style="font-size: 0.7rem; padding: 0.15rem 0.45rem;">+ הוסף ספח נוסף</button>
+              </div>
+              <div id="sefachChipsContainer" style="display: flex; flex-wrap: wrap; gap: 0.35rem;"></div>
             </div>
-            <div id="sefachChipsContainer" style="display: flex; flex-wrap: wrap; gap: 0.35rem;"></div>
           </div>
 
           <div class="field-error-msg" id="docsRequiredErrorMsg" style="margin-top: 0.6rem; text-align: center;"></div>
 
-          <!-- Residents Count Dropdown -->
-          <div style="margin-top: 0.75rem; background: var(--primary-50); border: 1px solid var(--primary-200); border-radius: var(--radius-md); padding: 0.65rem 0.9rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.1rem;">💧</span>
-                <div>
-                  <h4 style="font-size: 0.86rem; color: var(--primary-900); margin: 0;">מספר נפשות כולל בדירה (תעריף מוזל)</h4>
-                  <p style="font-size: 0.74rem; color: var(--slate-600); margin: 0;">הקצאה של 7 מ"ק לחודש בתעריף בסיסי מוזל לכל נפש</p>
-                </div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <select id="inputResidentsCount" class="form-select" style="padding: 0.35rem 0.65rem; font-size: 0.85rem; width: 110px;">
-                  <option value="1">1 נפש</option>
-                  <option value="2">2 נפשות</option>
-                  <option value="3">3 נפשות</option>
-                  <option value="4">4 נפשות</option>
-                  <option value="5+">5+ נפשות</option>
-                </select>
-              </div>
+          <!-- Fast OCR Extraction Preview Box -->
+          <div id="extractionLiveBox" style="display: none; margin-top: 0.85rem; padding: 0.85rem 1rem; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #15803d; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.4rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              הנתונים חולצו בהצלחה מהמסמכים!
             </div>
-          </div>
-
-          <!-- Simulation Notice for Peer Review -->
-          <div style="margin-top: 0.65rem; background: var(--slate-50); border: 1px dashed var(--slate-300); border-radius: var(--radius-sm); padding: 0.45rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
-            <span style="font-size: 0.74rem; color: var(--slate-600);">בדיקת עמיתים: הדמיית הודעת אי-קריאות בתמונה</span>
-            <button class="btn btn-secondary btn-sm" id="simulateOcrWarningBtn" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">הצג שגיאה לדוגמה</button>
-          </div>
-
-          <div class="upload-status-card warning" id="simulatedOcrWarningCard" style="display: none; margin-top: 0.4rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            <div>
-              <strong>לא הצלחנו לזהות בבירור את הספרות בצילום</strong>
-              <div style="font-size: 0.76rem;">אנא ודאו שהתמונה צולמה באור מלא וללא השתקפות, ונסו שוב.</div>
+            <div style="font-size: 0.8rem; color: #334155; line-height: 1.5;">
+              זוהתה כתובת הדירה: <strong>ביאליק 42 דירה 7, רמת גן</strong> | קריאת מונה: <strong>00384.2 מ"ק</strong> | משכיר: <strong>דוד כהן (ת.ז: 058765432)</strong>
             </div>
           </div>
 
           <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(5)">→ חזרה לפרטי הנכס</button>
-            <button class="btn btn-primary btn-sm" onclick="handleStep6Next()">המשך לסיכום וחתימה ←</button>
+            <button class="btn btn-secondary btn-sm" onclick="goToStep(3)">→ חזרה לפרטי זיהוי</button>
+            <button class="btn btn-primary btn-sm" onclick="handleSmartStep4Next()">בואו נאשר את הנתונים שנשלפו ←</button>
           </div>
         </div>
       </div>
 
-      <!-- STEP 7: Summary, Review & Digital Signature -->
-      <div id="wizard-step-7" class="wizard-step-panel" style="display: none;">
+      <!-- STEP 5: Full Conversational Summary, Inline Edit & Digital Signature -->
+      <div id="wizard-step-5" class="wizard-step-panel" style="display: none;">
         <div class="card">
-          <div class="card-header-clean">
-            <h2>שלב 5: סיכום פרטי הבקשה וחתימה דיגיטלית</h2>
-            <p>תמיד ניתן לחזור ולערוך כל שדה בלחיצה על כפתור העריכה</p>
+          <div class="review-step-container">
+            <div class="chat-bubble-intro">
+            <div class="chat-avatar" style="display: flex; align-items: center; justify-content: center; background: #e0f2fe; color: var(--primary-700);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="chat-bubble-content">
+              <h3>הנה סיכום מלא של כל פרטי הבקשה – בדקו שהכל מדויק לפני החתימה:</h3>
+              <p>ריכזנו את הפרטים שהזנתם יחד עם הנתונים שחולצו מהמסמכים לפי קטגוריות. ניתן לערוך כל מקטע בלחיצה על כפתור <strong>עריכה ✎</strong>.</p>
+            </div>
           </div>
 
-          <table class="data-comparison-table">
-            <tbody>
-              <tr>
-                <th style="width: 25%;">שם מלא</th>
-                <td id="sumName" style="font-weight: 700;">נועה לוי</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(3)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>מספר זהות</th>
-                <td id="sumId" style="font-family: monospace;">318765432</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(3)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>טלפון ואימייל</th>
-                <td><span id="sumPhone">054-8765432</span> • <span id="sumEmail">noa.levi@example.com</span></td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(4)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>כתובת הדירה</th>
-                <td id="sumAddress" style="font-weight: 600;">רחוב ביאליק 42, דירה 7, רמת גן</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(5)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>תאריך כניסה</th>
-                <td id="sumEntryDate" style="font-weight: 600;">24/09/2026</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(5)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>פרטי המשכיר</th>
-                <td id="sumLandlord" style="font-weight: 600;">דוד כהן</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(5)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>קריאת מונה מים</th>
-                <td><strong id="sumMeter">00384.2 מ"ק</strong> <span id="sumMeterDoc" style="margin-right: 0.5rem;"></span></td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(6)">עריכה ✎</button></td>
-              </tr>
-              <tr>
-                <th>מספר נפשות להנחה</th>
-                <td id="sumResidents">1 נפש (7 מ"ק הקצאה בסיסית)</td>
-                <td style="text-align: left;"><button class="btn btn-secondary btn-sm" onclick="goToStep(6)">עריכה ✎</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="dialogue-step-title">סיכום פרטי הבקשה וחתימה דיגיטלית</div>
+          <div class="dialogue-step-desc">בדקו את הנתונים לפי קטגוריות, תמיד ניתן לחזור ולערוך:</div>
+
+          <!-- 4 Clean Categorized Cards Grid -->
+          <div class="review-categories-grid">
+
+            <!-- Category 1: Applicant Details (הפרטים שלך) -->
+            <div class="review-category-card">
+              <div class="review-category-header">
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                  <span class="review-cat-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  </span>
+                  <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">1. הפרטים שלך (השוכר/ת)</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(3)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+              </div>
+              <div class="review-category-body">
+                <div class="review-field-row">
+                  <span class="review-field-label">שם מלא:</span>
+                  <strong class="review-field-val" id="sumName">נועה לוי</strong>
+                </div>
+                <div class="review-field-row">
+                  <span class="review-field-label">מספר זהות:</span>
+                  <span class="review-field-val" id="sumId" style="font-family: monospace; font-weight: 700;">318765432</span>
+                </div>
+                <div class="review-field-row">
+                  <span class="review-field-label">פרטי קשר:</span>
+                  <span class="review-field-val"><span id="sumPhone">054-8765432</span> • <span id="sumEmail">noa.levi@example.com</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category 2: Property Details (פרטי הדירה) -->
+            <div class="review-category-card">
+              <div class="review-category-header">
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                  <span class="review-cat-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  </span>
+                  <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">2. פרטי הדירה והמועד</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+              </div>
+              <div class="review-category-body">
+                <div class="review-field-row">
+                  <span class="review-field-label">כתובת הדירה:</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                    <strong class="review-field-val" id="sumAddress">רחוב ביאליק 42, דירה 7, רמת גן</strong>
+                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      חולץ מהחוזה
+                    </span>
+                  </div>
+                </div>
+                <div class="review-field-row">
+                  <span class="review-field-label">תאריך כניסה:</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                    <strong class="review-field-val" id="sumEntryDate">01/10/2026</strong>
+                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      חולץ מהחוזה
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category 3: Landlord Info (בעל הדירה) -->
+            <div class="review-category-card">
+              <div class="review-category-header">
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                  <span class="review-cat-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                  </span>
+                  <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">3. בעל הדירה (המשכיר)</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+              </div>
+              <div class="review-category-body">
+                <div class="review-field-row">
+                  <span class="review-field-label">שם ותעודת זהות:</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                    <strong class="review-field-val" id="sumLandlord">דוד כהן (ת.ז: 058765432)</strong>
+                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      מאומת במסמכים
+                    </span>
+                  </div>
+                </div>
+                <div class="review-field-row">
+                  <span class="review-field-label">מעמד בנכס:</span>
+                  <span class="review-field-val" style="color: var(--slate-700);">בעל נכס רשום במרשם התאגיד</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category 4: Meter & Quota (מונה והנחת מים) -->
+            <div class="review-category-card">
+              <div class="review-category-header">
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                  <span class="review-cat-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                  </span>
+                  <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">4. מונה מים והקצאת נפשות</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+              </div>
+              <div class="review-category-body">
+                <div class="review-field-row">
+                  <span class="review-field-label">קריאת מונה:</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                    <strong class="review-field-val" id="sumMeter" style="font-size: 0.95rem; color: var(--primary-900);">00384.2 מ"ק</strong>
+                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      חולץ מהצילום
+                    </span>
+                  </div>
+                </div>
+                <div class="review-field-row">
+                  <span class="review-field-label">זכאות והנחת מים:</span>
+                  <span class="review-field-val" id="sumResidents" style="font-weight: 600;">2 נפשות (14 מ"ק לחודש בתעריף מוזל)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Summary Bar: Verified Documents -->
+          <div style="margin-bottom: 0.75rem; padding: 0.65rem 0.85rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--slate-600);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--slate-700);">מסמכים שאומתו במערכת:</span>
+              <span id="sumDocs" style="font-size: 0.8rem; color: var(--slate-600);">צילום מונה מים • חוזה שכירות חתום • ת.ז וספח משכיר • ת.ז וספח שוכר</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.7rem; padding: 0.15rem 0.45rem;">שינוי מסמכים ✎</button>
+          </div>
+
+          <!-- Expandable Sefach Extracted Details Section -->
+          <div id="sefachExtractedDetailsContainer" style="margin: 0.75rem 0; border: 1.5px solid #bae6fd; border-radius: var(--radius-md); background: #f0f9ff; overflow: hidden; transition: all 0.2s ease;">
+            <div id="sefachExtractedToggleBtn" style="padding: 0.65rem 0.85rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; background: #e0f2fe;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-700);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <div>
+                  <strong style="font-size: 0.85rem; color: var(--primary-950);" id="sefachExtractedTitle">פירוט הבגירים והנפשות שחולצו מספחי תעודת הזהות</strong>
+                  <span class="extracted-highlight-badge" style="margin-right: 0.4rem; font-size: 0.7rem;" id="sefachExtractedBadge">חולצו 2 נפשות מוכרות ✓</span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 700; color: var(--primary-700);">
+                <span id="sefachToggleLabel">לחצו לצפייה בפרטים שחולצו</span>
+                <svg id="sefachToggleArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition: transform 0.2s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+
+            <!-- Collapsible Body with Extracted Adult Details Demo -->
+            <div id="sefachExtractedBody" style="display: none; padding: 0.85rem; border-top: 1px solid #bae6fd; background: #ffffff;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 0.75rem;" id="sefachResidentsGrid">
+                <!-- Resident 1 (Main Applicant) -->
+                <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 0.7rem 0.8rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
+                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--slate-900);">דייר/ת 1: נועה לוי (מגישת הבקשה)</span>
+                    <span class="status-pill success" style="font-size: 0.68rem;">מאומת בספח ✓</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--slate-600); line-height: 1.45;">
+                    <div>תעודת זהות: <strong>318765432</strong> | שנת לידה: <strong>1996</strong> (גיל: 30)</div>
+                    <div>כתובת מגורים בספח: <strong>ביאליק 42, דירה 7, רמת גן</strong></div>
+                    <div style="color: #15803d; font-weight: 600; margin-top: 0.2rem;">✓ ספח תואם לכתובת הנכס המבוקש</div>
+                  </div>
+                </div>
+
+                <!-- Resident 2 (Additional Adult Sefach) -->
+                <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 0.7rem 0.8rem;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
+                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--slate-900);">דייר 2: יונתן שפירא (ספח נוסף שצורף)</span>
+                    <span class="status-pill success" style="font-size: 0.68rem;">מאומת בספח ✓</span>
+                  </div>
+                  <div style="font-size: 0.78rem; color: var(--slate-600); line-height: 1.45;">
+                    <div>תעודת זהות: <strong>209847561</strong> | שנת לידה: <strong>1994</strong> (גיל: 32)</div>
+                    <div>כתובת מגורים בספח: <strong>ביאליק 42, דירה 7, רמת גן</strong></div>
+                    <div style="color: #15803d; font-weight: 600; margin-top: 0.2rem;">✓ זכאות מאושרת להקצאת מים מוזלת</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quota & Savings Calculation Banner -->
+              <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 0.35rem;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                  <span><strong>חישוב מכסה חודשית מעודכנת:</strong> 2 נפשות × 7 מ"ק = <strong>14 מ"ק לחודש בתעריף מוזל</strong></span>
+                </div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #15803d; background: #ffffff; border: 1px solid #86efac; padding: 0.15rem 0.5rem; border-radius: 999px;">
+                  חיסכון מוערך של עד 45% בחשבון המים
+                </span>
+              </div>
+            </div>
+          </div>
 
           <!-- Declarations -->
           <div style="margin: 0.85rem 0 0.5rem 0; padding: 0.75rem 0.9rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md);">
@@ -1030,7 +1089,7 @@
                 <span>אני מצהיר/ה כי כל הפרטים והמסמכים שנמסרו בבקשה זו הינם נכונים ומדויקים, ומבקש/ת לרשום את חשבון המים על שמי מתאריך הכניסה הנקוב. <span class="required-star">*</span></span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.82rem; color: var(--slate-600);">
-                <input type="checkbox" id="acceptDigitalUpdatesCheckbox" style="width: 16px; height: 16px; accent-color: var(--primary-600);">
+                <input type="checkbox" id="acceptDigitalUpdatesCheckbox" style="width: 16px; height: 16px; accent-color: var(--primary-600);" checked>
                 <span>אני מאשר/ת קבלת עדכונים ואישור סופי בדיגיטל (SMS ודוא"ל).</span>
               </label>
             </div>
@@ -1040,9 +1099,9 @@
           <!-- Interactive Digital Signature Canvas -->
           <div style="margin: 0.65rem 0; padding: 0.75rem 0.9rem; background: #ffffff; border: 1px solid var(--slate-200); border-radius: var(--radius-md);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-              <label class="form-label" style="margin: 0;">
-                חתימה דיגיטלית של מגיש/ת הבקשה <span class="required-star">*</span>
-                <span style="font-size: 0.74rem; color: var(--slate-500); font-weight: normal;">(חתמו באמצעות העכבר או האצבע במסך מגע)</span>
+              <label class="conversational-label" style="margin: 0;">
+                אנא חתמו כאן לאישור הבקשה: <span class="required-star">*</span>
+                <span style="font-size: 0.74rem; color: var(--slate-500); font-weight: normal;">(חתימה באמצעות העכבר או האצבע במסך מגע)</span>
               </label>
               <button type="button" class="btn btn-secondary btn-sm" id="clearSignatureBtn" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
                 נקה חתימה ↺
@@ -1055,21 +1114,22 @@
           </div>
 
           <div class="button-row">
-            <button class="btn btn-secondary btn-sm" onclick="goToStep(6)">→ חזרה לעריכה</button>
-            <button class="btn btn-primary btn-sm" onclick="handleStep7Next()">שליחת הבקשה לתאגיד המים ✓</button>
+            <button class="btn btn-secondary btn-sm" onclick="goToStep(4)">→ חזרה להעלאת מסמכים</button>
+            <button class="btn btn-primary btn-sm" onclick="handleSmartStep5Submit()">שליחת הבקשה לתאגיד המים ✓</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- STEP 8: Success & Next Steps -->
-      <div id="wizard-step-8" class="wizard-step-panel" style="display: none;">
+      <!-- STEP 6: Success & Tracking -->
+      <div id="wizard-step-6" class="wizard-step-panel" style="display: none;">
         <div class="card success-card">
           <div class="success-badge-icon">
             <svg width="32" height="32" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
 
-          <h2>קיבלנו את הבקשה שלך!</h2>
-          <p style="color: var(--slate-600); font-size: 0.95rem; margin-top: 0.2rem;">אנחנו מעדכנים את חשבון המים על שמך בתאגיד מי רמת גן</p>
+          <h2>קיבלנו את הבקשה שלך, נועה!</h2>
+          <p style="color: var(--slate-600); font-size: 0.95rem; margin-top: 0.2rem;">חשבון המים עודכן על שמך בהצלחה במסלול האוטומטי הירוק</p>
 
           <div class="case-id-tag">
             <svg width="16" height="16" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
@@ -1077,26 +1137,26 @@
           </div>
 
           <div class="timeline-box">
-            <h4 style="font-size: 0.88rem; margin-bottom: 0.65rem; color: var(--slate-900);">מה קורה עכשיו?</h4>
+            <h4 style="font-size: 0.88rem; margin-bottom: 0.65rem; color: var(--slate-900);">מה בוצע כעת?</h4>
             <div class="timeline-step">
-              <div class="timeline-bullet">1</div>
+              <div class="timeline-bullet">✓</div>
               <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">אימות אוטומטי של החוזה והמסמכים</div>
-                <div style="font-size: 0.78rem; color: var(--slate-600);">המערכת מאמתת את הנתונים ישירות מול רישומי העירייה.</div>
+                <div style="font-weight: 700; font-size: 0.85rem;">אימות חוזה וקריאת מונה מים מהצילומים</div>
+                <div style="font-size: 0.78rem; color: var(--slate-600);">הנתונים אומתו אוטומטית מול רישומי תאגיד מי רמת גן.</div>
               </div>
             </div>
             <div class="timeline-step">
-              <div class="timeline-bullet">2</div>
+              <div class="timeline-bullet">✓</div>
               <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">עדכון חשבון המים על שמך</div>
-                <div style="font-size: 0.78rem; color: var(--slate-600);">חשבון המים יועבר מתאריך תחילת השכירות.</div>
+                <div style="font-weight: 700; font-size: 0.85rem;">שיוך הנכס על שמך</div>
+                <div style="font-size: 0.78rem; color: var(--slate-600);">החשבון יחויב החל מיום הכניסה שנקבע.</div>
               </div>
             </div>
             <div class="timeline-step">
-              <div class="timeline-bullet">3</div>
+              <div class="timeline-bullet">✓</div>
               <div>
-                <div style="font-weight: 700; font-size: 0.85rem;">שליחת הודעת אישור ב-SMS ובאימייל</div>
-                <div style="font-size: 0.78rem; color: var(--slate-600);">אישור רשמי יישלח לטלפון ולמייל שלך.</div>
+                <div style="font-weight: 700; font-size: 0.85rem;">שליחת אישור רשמי</div>
+                <div style="font-size: 0.78rem; color: var(--slate-600);">אישור דיגיטלי חתום נשלח כעת ב-SMS ובדוא"ל.</div>
               </div>
             </div>
           </div>
@@ -1115,233 +1175,519 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- MODULE 2: SMS COMPLETION DEEP-LINK VIEW    -->
+    <!-- MODULE 2: SMS COMPLETION VIEW             -->
     <!-- ========================================== -->
     <div id="view-sms-completion" class="view-panel">
       <div class="card">
-        <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: var(--primary-50); color: var(--primary-700); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem;">
-          <svg width="12" height="12" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path></svg>
-          כניסה ישירה מקישור SMS
-        </div>
-
         <div class="card-header-clean">
-          <h2>שלום נועה, נדרשת רק השלמה של צילום מונה המים</h2>
-          <p>כל שאר פרטי הבקשה שלך (RG-2026-8841) כבר שמורים במערכת ואין צורך להקלידם שוב</p>
+          <h2>השלמת מסמך חסר – צילום מונה מים</h2>
+          <p>פנייה מספר <strong>RG-2026-8841</strong> • נועה לוי</p>
         </div>
 
-        <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; font-size: 0.82rem;">
-            <div>
-              <span style="color: var(--slate-400); display: block; font-size: 0.72rem;">שם הדיירת:</span>
-              <strong>נועה לוי</strong>
-            </div>
-            <div>
-              <span style="color: var(--slate-400); display: block; font-size: 0.72rem;">כתובת הנכס:</span>
-              <strong>ביאליק 42, דירה 7</strong>
-            </div>
-            <div>
-              <span style="color: var(--slate-400); display: block; font-size: 0.72rem;">קריאה שהוזנה:</span>
-              <strong>00384.2 מ"ק</strong>
-            </div>
-          </div>
-        </div>
-
-        <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem;">אנא צרפי צילום ברור של שעון המים:</h3>
-        <div class="upload-box" id="smsMeterUploadBox" style="padding: 1.5rem 1rem;">
-          <div class="upload-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path></svg>
-          </div>
-          <h4>לחצי להעלאת צילום המונה</h4>
-          <p>ודאי שהספרות מוארות וברורות לקריאה</p>
-        </div>
-
-        <div class="upload-status-card success" id="smsMeterSuccess" style="display: none; margin-top: 0.65rem;">
-          <svg width="18" height="18" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <div class="upload-status-card warning" style="margin-bottom: 1rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
           <div>
-            <strong>התמונה נקלטה ואומתה בהצלחה ע"י המערכת!</strong>
-            <div style="font-size: 0.76rem;">הקריאה בתמונה תואמת לערך 00384.2 מ"ק.</div>
+            <strong>שלום נועה, צילום המונה שהועלה לא היה קריא מספיק</strong>
+            <div style="font-size: 0.78rem;">אנא העלי צילום ברור נוסף של שעון המים מואר היטב כדי שנוכל להשלים את עדכון החשבון.</div>
           </div>
         </div>
 
-        <div class="button-row">
-          <button class="btn btn-secondary btn-sm" onclick="switchView('noa-wizard')">חזרה לטופס הרגיל</button>
-          <button class="btn btn-secondary btn-sm" id="smsSubmitBtn" disabled>השלמת הבקשה וסיום ✓</button>
+        <div class="upload-box-compact" id="smsMeterUploadBox" style="min-height: 120px;">
+          <div class="upload-compact-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="upload-compact-content">
+            <div class="upload-compact-title" style="font-size: 0.95rem;">לחצו לצילום או בחירת תמונת מונה עדכנית</div>
+            <div class="upload-compact-sub">וודאו שכל ספרות השעון קריאות</div>
+          </div>
+          <div class="upload-compact-badge" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">העלאה +</div>
+        </div>
+
+        <div id="smsMeterSuccess" style="display: none; align-items: center; gap: 0.5rem; margin-top: 0.85rem; color: var(--teal-700); font-weight: 700; font-size: 0.9rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          צילום המונה נקלט בהצלחה ונבדק תקין!
+        </div>
+
+        <div class="button-row" style="margin-top: 1.25rem;">
+          <button class="btn btn-secondary btn-sm" onclick="switchView('noa-wizard')">חזרה לטופס</button>
+          <button class="btn btn-primary btn-sm" id="smsSubmitBtn" disabled>שליחת צילום המונה לתאגיד ←</button>
         </div>
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- MODULE 3: SERVICE REP BACKOFFICE VIEW      -->
+    <!-- MODULE 3: BACKOFFICE SERVICE AGENT VIEW    -->
+    <!-- ========================================== -->
+    <!-- ========================================== -->
+    <!-- MODULE 3: BACKOFFICE SERVICE AGENT VIEW    -->
     <!-- ========================================== -->
     <div id="view-backoffice" class="view-panel">
-      <div class="card" style="padding: 1rem 1.5rem; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
-        <div>
-          <span style="font-size: 0.74rem; color: var(--slate-400); font-weight: 700;">מרחב טיפול בחריגי אוטומציה (RPA Exceptions)</span>
-          <h2 style="font-size: 1.15rem; margin-top: 0.1rem;">פנייה מס' RG-2026-8841 • נועה לוי (תחילת שכירות)</h2>
-        </div>
-        <button class="btn btn-primary btn-sm" id="backofficeSendSmsBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          שלח בקשת השלמה לנועה (בלחיצה אחת)
-        </button>
-      </div>
-
-      <div class="backoffice-grid">
-        <!-- Side 1: Document View -->
-        <div class="doc-viewer-card">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 0.95rem; color: var(--slate-800);">מסמך מקור: צילום מונה מים שהועלה</h3>
-            <span class="status-pill warning">כשל פענוח RPA</span>
-          </div>
-
-          <div class="mock-document-preview" style="background: url('assets/meter_sample.jpg') center/cover no-repeat;">
-            <div class="blur-overlay">
-              <svg width="24" height="24" viewBox="0 0 24 24" style="color: var(--warning-500);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-              <h4 style="font-size: 0.88rem; color: #ffffff;">תמונה מטושטשת / השתקפות</h4>
-              <p style="font-size: 0.74rem; color: var(--slate-200); max-width: 220px;">
-                רובוט ה-RPA לא הצליח לקרוא בוודאות את ספרות המונה מהתמונה עקב טשטוש.
-              </p>
+      
+      <!-- SUB-VIEW 1: TICKETS INBOX / QUEUE -->
+      <div id="repInboxView">
+        <div class="card">
+          <div class="card-header-clean" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h2>תור פניות להחלפת משלמים – מרחב נציג שירות 🎧</h2>
+              <p>מעקב, בדיקת מסמכים, השוואת חילוצי AI ושליחת בקשות השלמה</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="switchView('noa-wizard')">← מעבר למסע התושב</button>
+              <button class="btn btn-outline-primary btn-sm" onclick="switchView('dashboard')">דשבורד מנהל</button>
             </div>
           </div>
-        </div>
 
-        <!-- Side 2: Data Comparison -->
-        <div class="side-data-card">
-          <h3 style="font-size: 0.95rem; color: var(--slate-800); margin-bottom: 0.4rem;">השוואת נתונים</h3>
-          <table class="data-comparison-table">
-            <thead>
-              <tr>
-                <th>שדה</th>
-                <th>הוזן בטופס</th>
-                <th>חולץ ע"י הרובוט</th>
-                <th>סטטוס</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>שם הדיירת</td>
-                <td>נועה לוי</td>
-                <td>נועה לוי</td>
-                <td><span class="status-pill success">תואם</span></td>
-              </tr>
-              <tr>
-                <td>מספר זהות</td>
-                <td>318765432</td>
-                <td>318765432</td>
-                <td><span class="status-pill success">תואם</span></td>
-              </tr>
-              <tr>
-                <td>כתובת הנכס</td>
-                <td>ביאליק 42/7</td>
-                <td>ביאליק 42 דירה 7</td>
-                <td><span class="status-pill success">תואם</span></td>
-              </tr>
-              <tr style="background: var(--warning-50);">
-                <td><strong>קריאת מונה</strong></td>
-                <td><strong>00384.2</strong></td>
-                <td style="color: var(--warning-700);">לא פוענח (מטושטש)</td>
-                <td><span class="status-pill warning">דורש השלמה</span></td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- Representative Stats Bar -->
+          <div class="rep-stats-grid">
+            <div class="rep-stat-card">
+              <div class="rep-stat-icon" style="background: #e0f2fe; color: #0369a1;">📋</div>
+              <div>
+                <div class="rep-stat-val" id="statTotalTickets">4</div>
+                <div class="rep-stat-lbl">פניות פעילות בתור</div>
+              </div>
+            </div>
+            <div class="rep-stat-card">
+              <div class="rep-stat-icon" style="background: #fef9c3; color: #854d0e;">⏳</div>
+              <div>
+                <div class="rep-stat-val" id="statPendingReview">2</div>
+                <div class="rep-stat-lbl">ממתינות לבדיקת נציג</div>
+              </div>
+            </div>
+            <div class="rep-stat-card">
+              <div class="rep-stat-icon" style="background: #fed7aa; color: #9a3412;">📱</div>
+              <div>
+                <div class="rep-stat-val" id="statPendingCustomer">1</div>
+                <div class="rep-stat-lbl">ממתין להשלמת לקוח</div>
+              </div>
+            </div>
+            <div class="rep-stat-card">
+              <div class="rep-stat-icon" style="background: #dcfce7; color: #15803d;">👔</div>
+              <div>
+                <div class="rep-stat-val" id="statEscalated">1</div>
+                <div class="rep-stat-lbl">הועבר לאישור מנהל</div>
+              </div>
+            </div>
+          </div>
 
-          <div style="margin-top: 1rem;">
-            <h4 style="font-size: 0.82rem; color: var(--slate-700); margin-bottom: 0.5rem;">יומן פעולות:</h4>
-            <div id="backofficeTimeline" class="timeline-box" style="margin: 0; padding: 0.85rem; max-width: 100%;"></div>
+          <!-- Filter Tabs and Search Bar -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <div class="rep-filter-tabs" id="repFilterTabs" style="margin-bottom: 0;">
+              <button class="rep-tab-btn active" data-filter="all">כל הפניות (<span id="countAll">4</span>)</button>
+              <button class="rep-tab-btn" data-filter="pending_review">ממתין לבדיקה (<span id="countPendingReview">2</span>)</button>
+              <button class="rep-tab-btn" data-filter="pending_customer">ממתין ללקוח (<span id="countPendingCustomer">1</span>)</button>
+              <button class="rep-tab-btn" data-filter="escalated">בטיפול מנהל (<span id="countEscalated">1</span>)</button>
+              <button class="rep-tab-btn" data-filter="completed">אושר ונסגר (<span id="countCompleted">0</span>)</button>
+            </div>
+            <div style="position: relative; min-width: 220px;">
+              <input type="text" id="repSearchInput" placeholder="חיפוש לפי שם, ת.ז, פנייה..." style="padding: 0.35rem 0.65rem; font-size: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); width: 100%; font-family: inherit;">
+            </div>
+          </div>
+
+          <!-- Interactive Tickets Table -->
+          <div style="overflow-x: auto;">
+            <table class="rep-tickets-table">
+              <thead>
+                <tr>
+                  <th>פנייה ולקוח</th>
+                  <th>כתובת הנכס</th>
+                  <th>זמן קבלה</th>
+                  <th>סטטוס</th>
+                  <th style="text-align: center; width: 100px;">פעולה</th>
+                </tr>
+              </thead>
+              <tbody id="repTicketsTableBody">
+                <!-- Dynamically Rendered by JS -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      <!-- SUB-VIEW 2: SPECIFIC TICKET DETAIL WORKSPACE -->
+      <div id="repDetailView" style="display: none;">
+        <div class="card">
+          <!-- Ticket Header Bar -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem; padding-bottom: 0.85rem; border-bottom: 1.5px solid var(--slate-200); margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn btn-secondary btn-sm" id="backToInboxBtn">← חזרה לתור הפניות</button>
+              <div>
+                <h2 style="font-size: 1.15rem; color: var(--slate-900); margin: 0;" id="detailTicketHeaderTitle">תיק פנייה: RG-2026-8841 • נועה לוי</h2>
+                <div style="font-size: 0.76rem; color: var(--slate-500); margin-top: 0.15rem;" id="detailTicketSubTitle">התקבלה לפני 14 דקות • עמידה ביעד SLA: 98%</div>
+              </div>
+            </div>
+
+            <!-- Status Changer Dropdown -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--slate-700);">סטטוס פנייה:</span>
+              <select id="detailStatusSelect" style="padding: 0.35rem 0.65rem; border-radius: var(--radius-sm); border: 1.5px solid var(--primary-300); font-size: 0.82rem; font-weight: 700; font-family: inherit; background: #ffffff; color: var(--primary-900);">
+                <option value="pending_review">⏳ ממתין לבדיקת נציג</option>
+                <option value="pending_customer">📱 ממתין להשלמת לקוח</option>
+                <option value="escalated">👔 הועבר לאישור מנהל</option>
+                <option value="completed">✅ אושר ונסגר בהצלחה</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 1: Customer & Property Overview Info -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">👤 פרטי מגיש/ת הבקשה (שוכר/ת)</div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--slate-900);" id="detailTenantName">נועה לוי</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailTenantId">ת.ז: 318765432</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailTenantContact">טל': 050-1234567 | noa.levi@example.com</div>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">🏠 פרטי הנכס והמשכיר</div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--slate-900);" id="detailPropertyAddress">ביאליק 42, דירה 7, רמת גן</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailOwnerInfo">משכיר: דוד כהן (ת.ז: 058765432)</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailOwnerPhone">טל' משכיר: 052-9876543</div>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--primary-700); margin-bottom: 0.35rem;">💧 נתוני מונה ותאריכים</div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--slate-900);" id="detailMeterSummary">מונה מים מס': 9482710</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailReadingSummary">קריאת מונה שהוזנה: 384.2 מ"ק</div>
+              <div style="font-size: 0.78rem; color: var(--slate-600);" id="detailDateSummary">תאריך כניסה לתוקף: 01/10/2026</div>
+            </div>
+          </div>
+
+          <!-- Section 2: Data Cross-Verification Matrix -->
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+              <h3 style="font-size: 0.95rem; color: var(--slate-900); font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+                <span>🔍</span> השוואת נתונים: הזנת אזרח מול חילוץ מסמכים (OCR) ומאגרי מידע
+              </h3>
+              <span class="extracted-highlight-badge" style="font-size: 0.72rem;">אימות אוטומטי מבוסס AI</span>
+            </div>
+
+            <table class="data-comparison-table" style="margin-bottom: 0;">
+              <thead>
+                <tr style="background: #f1f5f9;">
+                  <th style="width: 18%; font-size: 0.78rem; white-space: nowrap;">שדה בדיקה</th>
+                  <th style="width: 20%; font-size: 0.78rem;">נתון שהוזן ע"י האזרח</th>
+                  <th style="width: 25%; font-size: 0.78rem;">נתון שנשלף מהמסמך (OCR)</th>
+                  <th style="width: 21%; font-size: 0.78rem;">אימות מול מאגר עירוני/טאבו</th>
+                  <th style="width: 16%; font-size: 0.78rem; text-align: center; white-space: nowrap;">סטטוס התאמה</th>
+                </tr>
+              </thead>
+              <tbody id="detailComparisonTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 3: Attached Documents Gallery -->
+          <div style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 0.95rem; color: var(--slate-900); font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+              <span>📁</span> מסמכים שצורפו לפנייה (לחצו להגדלה וצפייה מלאה)
+            </h3>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem;" id="detailDocsGrid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Section 4: Representative Actions Hub -->
+          <div class="action-bar-container">
+            <span style="font-size: 0.84rem; font-weight: 800; color: var(--slate-800); margin-left: 0.5rem;">פעולות נציג בתיק:</span>
+            
+            <button class="btn btn-primary btn-sm" id="btnActionSendCustomer">
+              <span>📱</span> שלח הודעה / בקשת השלמה ללקוח
+            </button>
+
+            <button class="btn btn-secondary btn-sm" id="btnActionEscalateManager">
+              <span>👔</span> העבר לבדיקת מנהל
+            </button>
+
+            <button class="btn btn-secondary btn-sm" id="btnActionEditDetails">
+              <span>✏️</span> עריכת נתוני בקשה
+            </button>
+
+            <button class="btn btn-sm" id="btnActionApproveTicket" style="background: #15803d; color: #ffffff; font-weight: 700;">
+              <span>✅</span> אישור סופי והחלפת משלמים
+            </button>
+          </div>
+
+          <!-- Section 5: Ticket Audit Trail & History -->
+          <div style="margin-top: 1rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <h4 style="font-size: 0.84rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.5rem;">יומן פעולות והיסטוריית אירועים בתיק</h4>
+            <div id="backofficeTimeline" class="timeline-box" style="margin: 0; padding: 0; background: transparent; border: none;"></div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
     <!-- ========================================== -->
     <!-- MODULE 4: OPERATIONS DASHBOARD VIEW        -->
     <!-- ========================================== -->
+    <!-- ========================================== -->
+    <!-- MODULE 4: OPERATIONS DASHBOARD VIEW        -->
+    <!-- ========================================== -->
     <div id="view-dashboard" class="view-panel">
-      
-      <!-- HERO METRIC (Most prominent) -->
-      <div class="hero-kpi-card">
-        <div class="hero-kpi-info">
-          <span style="font-size: 0.74rem; font-weight: 700; color: var(--warning-700); text-transform: uppercase;">תשומת לב ניהולית</span>
-          <h3>14 בקשות דורשות התערבות וטיפול מיידי</h3>
-          <p>צווארי בקבוק: 8 צילומי מונה מטושטשים, 4 אי-התאמת בעלים, 2 חתימות חסרות</p>
-        </div>
-        <div class="hero-kpi-number">14</div>
-      </div>
-
-      <!-- Secondary Metrics -->
-      <div class="secondary-kpis-grid">
-        <div class="small-kpi-card">
-          <div class="label">הושלמו אוטומטית היום (מסלול ירוק)</div>
-          <div class="value" style="color: var(--teal-600);">128 <span style="font-size: 0.78rem; font-weight: 500; color: var(--slate-500);">(92%)</span></div>
-        </div>
-
-        <div class="small-kpi-card">
-          <div class="label">זמן טיפול ממוצע לפנייה</div>
-          <div class="value" style="color: var(--primary-600);">4.2 דק'</div>
-        </div>
-
-        <div class="small-kpi-card">
-          <div class="label">פניות בהמתנה להשלמת מסמך</div>
-          <div class="value" style="color: var(--slate-700);">9</div>
-        </div>
-      </div>
-
-      <!-- Audit Log & Permissions -->
-      <div class="card" style="padding: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+      <div class="card">
+        <div class="card-header-clean" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
           <div>
-            <h3 style="font-size: 1rem; color: var(--slate-900);">יומן פעולות מערכת (Audit Log)</h3>
-            <p style="font-size: 0.78rem; color: var(--slate-500);">תיעוד שינויי סטטוס והרשאות</p>
+            <h2>תמונת מצב ניהולית 📊</h2>
+            <p>סקירה פשוטה, ברורה ומהירה של כלל הבקשות להחלפת משלמים היום</p>
           </div>
-
-          <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--slate-50); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);">
-            <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <label style="font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;">
-              <input type="checkbox" id="permissionsToggle" style="accent-color: var(--primary-600);">
-              חשיפת מסמכי זיהוי רגישים
-            </label>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary btn-sm" onclick="switchView('noa-wizard')">← מסע התושב</button>
+            <button class="btn btn-outline-primary btn-sm" onclick="switchView('backoffice')">מרחב נציג שירות 🎧</button>
           </div>
         </div>
 
-        <table class="audit-table">
-          <thead>
-            <tr>
-              <th style="width: 15%;">שעה</th>
-              <th style="width: 20%;">משתמש</th>
-              <th>פעולה שבוצעה</th>
-              <th style="width: 18%;">מזהה פנייה</th>
-            </tr>
-          </thead>
-          <tbody id="auditTableBody"></tbody>
-        </table>
-      </div>
+        <!-- 4 Simple Friendly KPI Cards -->
+        <div class="mgr-hero-grid">
+          <!-- 1. Success -->
+          <div class="mgr-card-friendly success">
+            <div class="mgr-card-top">
+              <span class="mgr-card-icon">✅</span>
+              <span class="mgr-card-num" id="mgrKpiSuccess">42</span>
+            </div>
+            <div>
+              <div class="mgr-card-title">הסתיימו בהצלחה</div>
+              <div class="mgr-card-desc">עברו אוטומטית ובקלות במסלול הירוק</div>
+            </div>
+          </div>
 
+          <!-- 2. Pending Customer -->
+          <div class="mgr-card-friendly warning">
+            <div class="mgr-card-top">
+              <span class="mgr-card-icon">📱</span>
+              <span class="mgr-card-num" id="mgrKpiPendingCustomer">5</span>
+            </div>
+            <div>
+              <div class="mgr-card-title">ממתין להשלמת תושב</div>
+              <div class="mgr-card-desc">נשלח קישור SMS להשלמת צילום מונה או חתימה</div>
+            </div>
+          </div>
+
+          <!-- 3. In Progress by Reps -->
+          <div class="mgr-card-friendly info">
+            <div class="mgr-card-top">
+              <span class="mgr-card-icon">🎧</span>
+              <span class="mgr-card-num" id="mgrKpiInReview">3</span>
+            </div>
+            <div>
+              <div class="mgr-card-title">בטיפול נציגי שירות</div>
+              <div class="mgr-card-desc">נבדקות ומטופלות כעת ע"י צוות הנציגים</div>
+            </div>
+          </div>
+
+          <!-- 4. Awaiting Manager Approval -->
+          <div class="mgr-card-friendly purple">
+            <div class="mgr-card-top">
+              <span class="mgr-card-icon">👔</span>
+              <span class="mgr-card-num" id="mgrKpiAwaitingManager">2</span>
+            </div>
+            <div>
+              <div class="mgr-card-title">ממתין לאישורך כמנהל</div>
+              <div class="mgr-card-desc">דורשות החלטה או אישור מיוחד בתיק</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manager Quick Task: Approvals Awaiting You -->
+        <div style="margin-bottom: 1.25rem; background: #ffffff; border: 1.5px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span style="font-size: 1.1rem;">⚡</span>
+              <strong style="font-size: 0.9rem; color: var(--slate-900);">פניות שממתינות להחלטה / אישור שלך:</strong>
+            </div>
+            <span class="status-pill info" style="font-size: 0.72rem;">2 פניות לטיפול</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;" id="mgrPendingActionList">
+            <!-- Ticket 1 -->
+            <div id="mgrItem-RG-2026-8843" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem;">
+              <div>
+                <div style="font-size: 0.84rem; font-weight: 700; color: var(--slate-900);">
+                  <span style="font-family: monospace; color: var(--primary-700);">RG-2026-8843</span> • מיכל ברקוביץ' (סיום שכירות, ז'בוטינסקי 88)
+                </div>
+                <div style="font-size: 0.76rem; color: var(--slate-600); margin-top: 0.15rem;">
+                  סיבת ההעברה: <strong>בדיקת חתימת משכיר חריגה</strong> • הועבר ע"י דנה (נציגה) לפני 35 דקות
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('backoffice'); openTicketDetails('RG-2026-8843');" style="font-size: 0.76rem; padding: 0.25rem 0.6rem;">צפייה בתיק 👁️</button>
+                <button type="button" class="btn btn-sm" onclick="mgrQuickApprove('RG-2026-8843')" style="background: #15803d; color: #ffffff; font-size: 0.76rem; padding: 0.25rem 0.6rem; font-weight: 700; cursor: pointer;">אישור מהיר ✅</button>
+              </div>
+            </div>
+
+            <!-- Ticket 2 -->
+            <div id="mgrItem-RG-2026-8835" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem;">
+              <div>
+                <div style="font-size: 0.84rem; font-weight: 700; color: var(--slate-900);">
+                  <span style="font-family: monospace; color: var(--primary-700);">RG-2026-8835</span> • רון אלמגור (שינוי מחזיקים, ביאליק 14)
+                </div>
+                <div style="font-size: 0.76rem; color: var(--slate-600); margin-top: 0.15rem;">
+                  סיבת ההעברה: <strong>פער צריכת מים קל לעומת ממוצע שנתי</strong> • הועבר ע"י יוסי (נציג)
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('backoffice'); openTicketDetails('RG-2026-8841');" style="font-size: 0.76rem; padding: 0.25rem 0.6rem;">צפייה בתיק 👁️</button>
+                <button type="button" class="btn btn-sm" onclick="mgrQuickApprove('RG-2026-8835')" style="background: #15803d; color: #ffffff; font-size: 0.76rem; padding: 0.25rem 0.6rem; font-weight: 700; cursor: pointer;">אישור מהיר ✅</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed (Clean & Light) -->
+        <div style="margin-bottom: 1.25rem;">
+          <h3 style="font-size: 0.9rem; color: var(--slate-900); font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>🔔</span> מה קורה עכשיו במערכת (עדכונים שוטפים):
+          </h3>
+          <div id="mgrActivityFeed">
+            <!-- Dynamically Rendered Feed Items -->
+          </div>
+        </div>
+
+        <!-- Privacy & Access Controls Box -->
+        <div style="padding: 0.75rem 1rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <strong style="font-size: 0.86rem; color: var(--slate-900);">🔒 הגנת פרטיות על מסמכים רגישים (ספחים ותעודות זהות)</strong>
+            <div style="font-size: 0.76rem; color: var(--slate-600);">ברירת מחדל: המסמכים מטושטשים ומאומתים אוטומטית ע"י המערכת ללא חשיפת פרטים מיותרים לנציגים</div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; color: var(--slate-800);">
+            <input type="checkbox" id="permissionsToggle" style="accent-color: var(--primary-600); width: 16px; height: 16px;">
+            אפשר צפייה במסמכים לנציגים מורשים
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button class="btn btn-secondary btn-sm" onclick="switchView('noa-wizard')">← חזרה למסע התושב</button>
+          <button class="btn btn-primary btn-sm" onclick="switchView('backoffice')">מעבר לתור הפניות של הנציגים 🎧</button>
+        </div>
+      </div>
     </div>
 
   </main>
 
-  <!-- Service Representative Automated SMS Modal -->
+  <!-- ========================================== -->
+  <!-- MODALS FOR REPRESENTATIVE PORTAL           -->
+  <!-- ========================================== -->
+
+  <!-- Modal 1: Send Message / Request to Customer -->
   <div class="modal-overlay" id="smsPreviewModal">
-    <div class="modal-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.05rem;">שליחת בקשת השלמה לנועה ב-SMS</h3>
-        <button id="closeModalBtn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--slate-400);">&times;</button>
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>שליחת הודעה / בקשת השלמה ללקוח/ה 📱</h3>
+        <button class="modal-close-btn" id="closeModalBtn">×</button>
       </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 0.75rem;">
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.3rem;">בחירת תבנית הודעה מהירה:</label>
+          <select id="smsTemplateSelect" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem; font-family: inherit;">
+            <option value="meter">השלמת צילום מונה מים (קריאה לא קריאה)</option>
+            <option value="contract">השלמת עמוד חתימות בחוזה השכירות</option>
+            <option value="id">השלמת ספח תעודת זהות פתוח</option>
+            <option value="custom">הודעה מותאמת אישית</option>
+          </select>
+        </div>
 
-      <p style="font-size: 0.8rem; color: var(--slate-600); margin-bottom: 0.75rem;">
-        הודעה מנוסחת מראש עם קישור ישיר להשלמת צילום המונה בלבד:
-      </p>
+        <div style="margin-bottom: 0.75rem;">
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.3rem;">ערוץ שליחה:</label>
+          <div style="display: flex; gap: 1rem; font-size: 0.82rem;">
+            <label style="cursor: pointer;"><input type="radio" name="sendChannel" value="sms" checked> הודעת SMS</label>
+            <label style="cursor: pointer;"><input type="radio" name="sendChannel" value="whatsapp"> WhatsApp</label>
+            <label style="cursor: pointer;"><input type="radio" name="sendChannel" value="email"> דוא"ל</label>
+          </div>
+        </div>
 
-      <div style="background: var(--primary-50); border: 1px solid var(--primary-200); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.84rem; color: var(--primary-900); line-height: 1.4; margin-bottom: 1rem;">
-        "היי נועה, שמחנו לקבל את בקשתך להעברת חשבון המים ברחוב ביאליק 42/7. כדי שנוכל לאשר את הבקשה, נשמח רק לצילום ברור של שעון המים בקישור הבא: <u>rg-water.gov.il/c/RG-8841</u>. תודה, צוות מי רמת גן"
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.3rem;">נוסח ההודעה שיישלח:</label>
+          <textarea id="smsCustomText" rows="4" style="width: 100%; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem; line-height: 1.4; font-family: inherit; resize: vertical;">שלום נועה, בתהליך החלפת המשלמים בדירה ברחוב ביאליק 42, צילום המונה לא היה קריא. אנא לחצי על הקישור להעלאת צילום ברור נוסף: https://rgwater.org.il/fix/8841</textarea>
+        </div>
       </div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+      <div class="modal-footer">
         <button class="btn btn-secondary btn-sm" onclick="document.getElementById('smsPreviewModal').classList.remove('show')">ביטול</button>
-        <button class="btn btn-primary btn-sm" id="confirmSendSmsBtn">אישור ושליחה לנועה ✓</button>
+        <button class="btn btn-primary btn-sm" id="confirmSendSmsBtn">אישור ושליחת הודעה 🚀</button>
       </div>
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <!-- Modal 2: Escalate / Transfer to Manager -->
+  <div class="modal-overlay" id="escalateModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>העברת פנייה לבדיקה ואישור מנהל 👔</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('escalateModal').classList.remove('show')">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 0.75rem;">
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.3rem;">סיבת ההעברה למנהל:</label>
+          <select id="escalateReasonSelect" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem; font-family: inherit;">
+            <option value="owner_mismatch">אי-התאמה בין חתימת משכיר למרשם הבעלות</option>
+            <option value="meter_gap">פער חריג בקריאת מונה מים לעומת צריכה ממוצעת</option>
+            <option value="debt">קיום יתרת חוב של מחזיק יוצא הדורשת אישור חריג</option>
+            <option value="other">אחר (פירוט בהערות)</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.3rem;">הערות הנציג למנהל:</label>
+          <textarea id="escalateNotes" rows="3" placeholder="פרטו את מהות הבדיקה הנדרשת ע&quot;י המנהל..." style="width: 100%; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem; font-family: inherit; resize: vertical;">נדרש אישור מנהל עקב בדיקה טכנית מיוחדת בנתוני הנכס.</textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('escalateModal').classList.remove('show')">ביטול</button>
+        <button class="btn btn-primary btn-sm" id="confirmEscalateBtn">העבר למנהל התורן ←</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Edit Ticket Details -->
+  <div class="modal-overlay" id="editTicketModal">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>עריכת נתוני בקשה ע"י נציג ✏️</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('editTicketModal').classList.remove('show')">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div>
+            <label style="font-size: 0.76rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.2rem;">קריאת מונה מתוקנת (מ"ק):</label>
+            <input type="text" id="editMeterReading" value="00384.2" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem;">
+          </div>
+          <div>
+            <label style="font-size: 0.76rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.2rem;">תאריך כניסה לתוקף:</label>
+            <input type="date" id="editEffectiveDate" value="2026-10-01" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem;">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 0.75rem;">
+          <label style="font-size: 0.76rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 0.2rem;">הערת עדכון לתיק:</label>
+          <input type="text" id="editChangeReason" value="עודכנה קריאת מונה מדויקת על בסיס צילום מוגדל" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-300); font-size: 0.82rem;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('editTicketModal').classList.remove('show')">ביטול</button>
+        <button class="btn btn-primary btn-sm" id="confirmEditTicketBtn">שמור שינויים בתיק ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Document Lightbox / High-Res Viewer -->
+  <div class="modal-overlay" id="docLightboxModal">
+    <div class="modal-card" style="max-width: 680px; width: 95%;">
+      <div class="modal-header">
+        <h3 id="lightboxDocTitle">צפייה במסמך</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('docLightboxModal').classList.remove('show')">×</button>
+      </div>
+      <div class="modal-body" style="text-align: center; max-height: 75vh; overflow-y: auto;">
+        <img id="lightboxDocImg" src="" alt="מסמך מוגדל" style="max-width: 100%; height: auto; border-radius: var(--radius-sm); box-shadow: var(--shadow-md);">
+        <div id="lightboxDocDesc" style="margin-top: 0.65rem; font-size: 0.8rem; color: var(--slate-600);"></div>
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <span style="font-size: 0.76rem; color: var(--slate-500);">נבדק ואושר ע"י מערכת אימות מסמכים</span>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('docLightboxModal').classList.remove('show')">סגירה</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/update-app.js?v=20260924_1130"></script>
 </body>
 </html>
