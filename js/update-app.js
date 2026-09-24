@@ -1362,6 +1362,153 @@ function syncSummaryData() {
   }
 }
 
+// Inline Editing Handlers for Step 5 Review Cards
+window.toggleEditCard = function(cardKey, forceOpen) {
+  const viewEl = document.getElementById('view' + cardKey);
+  const editEl = document.getElementById('edit' + cardKey);
+  const btnEl = document.getElementById('btnEdit' + cardKey);
+  
+  if (!viewEl || !editEl) return;
+  
+  const shouldOpen = forceOpen !== undefined ? forceOpen : (editEl.style.display === 'none' || editEl.style.display === '');
+  
+  if (shouldOpen) {
+    if (cardKey === 'Applicant') {
+      const nameInp = document.getElementById('inlineEditName');
+      if (nameInp) nameInp.value = document.getElementById('sumName')?.textContent || 'נועה לוי';
+      const idInp = document.getElementById('inlineEditId');
+      if (idInp) idInp.value = document.getElementById('sumId')?.textContent || '318765432';
+      const phoneInp = document.getElementById('inlineEditPhone');
+      if (phoneInp) phoneInp.value = document.getElementById('sumPhone')?.textContent || '054-8765432';
+      const emailInp = document.getElementById('inlineEditEmail');
+      if (emailInp) emailInp.value = document.getElementById('sumEmail')?.textContent || 'noa.levi@example.com';
+    } else if (cardKey === 'Property') {
+      const addrInp = document.getElementById('inlineEditAddress');
+      if (addrInp) addrInp.value = document.getElementById('sumAddress')?.textContent || 'רחוב ביאליק 42, דירה 7, רמת גן';
+      const dateInp = document.getElementById('inlineEditEntryDate');
+      if (dateInp) dateInp.value = appState.formData.entryDate || '2026-10-01';
+    } else if (cardKey === 'Landlord') {
+      const lNameInp = document.getElementById('inlineEditLandlordName');
+      if (lNameInp) lNameInp.value = appState.formData.landlordName || 'דוד כהן';
+      const lIdInp = document.getElementById('inlineEditLandlordId');
+      if (lIdInp) lIdInp.value = appState.formData.landlordId || '058765432';
+    } else if (cardKey === 'Meter') {
+      const currentMeter = (document.getElementById('sumMeter')?.textContent || '').replace(' מ"ק', '').trim() || appState.formData.meterReading || '00384.2';
+      const meterInp = document.getElementById('inlineEditMeterReading');
+      if (meterInp) meterInp.value = currentMeter;
+      const extraCount = appState.formData.additionalSefachFiles.length;
+      const countInp = document.getElementById('inlineEditResidentsCount');
+      if (countInp) countInp.value = (1 + extraCount) || 2;
+    }
+    
+    viewEl.style.display = 'none';
+    editEl.style.display = 'block';
+    if (btnEl) btnEl.style.display = 'none';
+  } else {
+    viewEl.style.display = 'block';
+    editEl.style.display = 'none';
+    if (btnEl) btnEl.style.display = 'inline-block';
+  }
+};
+
+window.saveEditCard = function(cardKey) {
+  if (cardKey === 'Applicant') {
+    const nameVal = document.getElementById('inlineEditName')?.value.trim() || 'נועה לוי';
+    const idVal = document.getElementById('inlineEditId')?.value.trim() || '318765432';
+    const phoneVal = document.getElementById('inlineEditPhone')?.value.trim() || '054-8765432';
+    const emailVal = document.getElementById('inlineEditEmail')?.value.trim() || 'noa.levi@example.com';
+    
+    const parts = nameVal.split(' ');
+    appState.formData.firstName = parts[0] || '';
+    appState.formData.lastName = parts.slice(1).join(' ') || '';
+    appState.formData.idNumber = idVal;
+    appState.formData.phone = phoneVal;
+    appState.formData.email = emailVal;
+    
+    if (document.getElementById('sumName')) document.getElementById('sumName').textContent = nameVal;
+    if (document.getElementById('sumId')) document.getElementById('sumId').textContent = idVal;
+    if (document.getElementById('sumPhone')) document.getElementById('sumPhone').textContent = phoneVal;
+    if (document.getElementById('sumEmail')) document.getElementById('sumEmail').textContent = emailVal;
+  } else if (cardKey === 'Property') {
+    const addressVal = document.getElementById('inlineEditAddress')?.value.trim() || 'רחוב ביאליק 42, דירה 7, רמת גן';
+    const entryDateVal = document.getElementById('inlineEditEntryDate')?.value || '2026-10-01';
+    
+    appState.formData.entryDate = entryDateVal;
+    
+    let formatted = entryDateVal;
+    if (entryDateVal && entryDateVal.includes('-')) {
+      const [y, m, d] = entryDateVal.split('-');
+      formatted = `${d}/${m}/${y}`;
+    }
+    
+    if (document.getElementById('sumAddress')) document.getElementById('sumAddress').textContent = addressVal;
+    if (document.getElementById('sumEntryDate')) document.getElementById('sumEntryDate').textContent = formatted;
+    
+    const badge1 = document.getElementById('badgeAddress');
+    if (badge1) {
+      badge1.innerHTML = '✎ עודכן ידנית';
+      badge1.style.background = '#e0f2fe';
+      badge1.style.color = '#0369a1';
+      badge1.style.borderColor = '#7dd3fc';
+    }
+    const badge2 = document.getElementById('badgeEntryDate');
+    if (badge2) {
+      badge2.innerHTML = '✎ עודכן ידנית';
+      badge2.style.background = '#e0f2fe';
+      badge2.style.color = '#0369a1';
+      badge2.style.borderColor = '#7dd3fc';
+    }
+  } else if (cardKey === 'Landlord') {
+    const lName = document.getElementById('inlineEditLandlordName')?.value.trim() || 'דוד כהן';
+    const lId = document.getElementById('inlineEditLandlordId')?.value.trim() || '058765432';
+    
+    appState.formData.landlordName = lName;
+    appState.formData.landlordId = lId;
+    
+    if (document.getElementById('sumLandlord')) document.getElementById('sumLandlord').textContent = `${lName} (ת.ז: ${lId})`;
+    
+    const badge = document.getElementById('badgeLandlord');
+    if (badge) {
+      badge.innerHTML = '✎ עודכן ידנית';
+      badge.style.background = '#e0f2fe';
+      badge.style.color = '#0369a1';
+      badge.style.borderColor = '#7dd3fc';
+    }
+  } else if (cardKey === 'Meter') {
+    const meterVal = document.getElementById('inlineEditMeterReading')?.value.trim() || '00384.2';
+    const countVal = parseInt(document.getElementById('inlineEditResidentsCount')?.value, 10) || 2;
+    
+    appState.formData.meterReading = meterVal;
+    
+    if (document.getElementById('sumMeter')) document.getElementById('sumMeter').textContent = `${meterVal} מ"ק`;
+    
+    const quota = countVal * 7;
+    if (document.getElementById('sumResidents')) {
+      document.getElementById('sumResidents').innerHTML = `<strong>${countVal} נפשות</strong> (${quota} מ"ק הקצאה מוזלת לחודש) <span class="extracted-highlight-badge" style="margin-right: 0.35rem; background: #e0f2fe; color: #0369a1; border-color: #7dd3fc;">✎ עודכן ידנית</span>`;
+    }
+    
+    const badge = document.getElementById('badgeMeter');
+    if (badge) {
+      badge.innerHTML = '✎ עודכן ידנית';
+      badge.style.background = '#e0f2fe';
+      badge.style.color = '#0369a1';
+      badge.style.borderColor = '#7dd3fc';
+    }
+    
+    // Also update backoffice ticket comparison if present
+    if (appState.backoffice && appState.backoffice.tickets) {
+      const ticket = appState.backoffice.tickets.find(t => t.id === 'RG-2026-8841');
+      if (ticket) {
+        ticket.meterReading = meterVal;
+        const row = ticket.comparison.find(c => c.field === 'קריאת מונה מים');
+        if (row) row.userInput = `${meterVal} מ"ק`;
+      }
+    }
+  }
+  
+  toggleEditCard(cardKey, false);
+};
+
 // Step Transition Handlers
 function handleSmartStep3Next() {
   let firstInvalid = null;

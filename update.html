@@ -887,11 +887,11 @@
           <div class="dialogue-step-title">סיכום פרטי הבקשה וחתימה דיגיטלית</div>
           <div class="dialogue-step-desc">בדקו את הנתונים לפי קטגוריות, תמיד ניתן לחזור ולערוך:</div>
 
-          <!-- 4 Clean Categorized Cards Grid -->
+          <!-- 4 Clean Categorized Cards Grid with Inline Editing -->
           <div class="review-categories-grid">
 
             <!-- Category 1: Applicant Details (הפרטים שלך) -->
-            <div class="review-category-card">
+            <div class="review-category-card" id="cardApplicant">
               <div class="review-category-header">
                 <div style="display: flex; align-items: center; gap: 0.45rem;">
                   <span class="review-cat-icon">
@@ -899,9 +899,11 @@
                   </span>
                   <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">1. הפרטים שלך (השוכר/ת)</span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(3)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnEditApplicant" onclick="toggleEditCard('Applicant')" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
               </div>
-              <div class="review-category-body">
+              
+              <!-- View Mode -->
+              <div class="review-category-body" id="viewApplicant">
                 <div class="review-field-row">
                   <span class="review-field-label">שם מלא:</span>
                   <strong class="review-field-val" id="sumName">נועה לוי</strong>
@@ -915,10 +917,38 @@
                   <span class="review-field-val"><span id="sumPhone">054-8765432</span> • <span id="sumEmail">noa.levi@example.com</span></span>
                 </div>
               </div>
+
+              <!-- Inline Edit Mode -->
+              <div class="review-category-body" id="editApplicant" style="display: none; padding-top: 0.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">שם מלא:</label>
+                    <input type="text" id="inlineEditName" value="נועה לוי" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                  </div>
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">מספר זהות (9 ספרות):</label>
+                    <input type="text" id="inlineEditId" value="318765432" maxlength="9" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem; font-family: monospace;">
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.6rem;">
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">טלפון נייד:</label>
+                    <input type="tel" id="inlineEditPhone" value="054-8765432" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                  </div>
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">כתובת דוא"ל:</label>
+                    <input type="email" id="inlineEditEmail" value="noa.levi@example.com" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditCard('Applicant', false)" style="font-size: 0.74rem; padding: 0.2rem 0.5rem;">ביטול</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="saveEditCard('Applicant')" style="font-size: 0.74rem; padding: 0.2rem 0.65rem;">שמירה ✓</button>
+                </div>
+              </div>
             </div>
 
             <!-- Category 2: Property Details (פרטי הדירה) -->
-            <div class="review-category-card">
+            <div class="review-category-card" id="cardProperty">
               <div class="review-category-header">
                 <div style="display: flex; align-items: center; gap: 0.45rem;">
                   <span class="review-cat-icon">
@@ -926,14 +956,16 @@
                   </span>
                   <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">2. פרטי הדירה והמועד</span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnEditProperty" onclick="toggleEditCard('Property')" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
               </div>
-              <div class="review-category-body">
+              
+              <!-- View Mode -->
+              <div class="review-category-body" id="viewProperty">
                 <div class="review-field-row">
                   <span class="review-field-label">כתובת הדירה:</span>
                   <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
                     <strong class="review-field-val" id="sumAddress">רחוב ביאליק 42, דירה 7, רמת גן</strong>
-                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                    <span class="extracted-highlight-badge" id="badgeAddress" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       חולץ מהחוזה
                     </span>
@@ -943,17 +975,33 @@
                   <span class="review-field-label">תאריך כניסה:</span>
                   <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
                     <strong class="review-field-val" id="sumEntryDate">01/10/2026</strong>
-                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                    <span class="extracted-highlight-badge" id="badgeEntryDate" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       חולץ מהחוזה
                     </span>
                   </div>
                 </div>
               </div>
+
+              <!-- Inline Edit Mode -->
+              <div class="review-category-body" id="editProperty" style="display: none; padding-top: 0.5rem;">
+                <div style="margin-bottom: 0.5rem;">
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">כתובת הדירה (רחוב, מספר, דירה ועיר):</label>
+                  <input type="text" id="inlineEditAddress" value="רחוב ביאליק 42, דירה 7, רמת גן" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                </div>
+                <div style="margin-bottom: 0.6rem;">
+                  <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">תאריך כניסה לתוקף:</label>
+                  <input type="date" id="inlineEditEntryDate" value="2026-10-01" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                </div>
+                <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditCard('Property', false)" style="font-size: 0.74rem; padding: 0.2rem 0.5rem;">ביטול</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="saveEditCard('Property')" style="font-size: 0.74rem; padding: 0.2rem 0.65rem;">שמירה ✓</button>
+                </div>
+              </div>
             </div>
 
             <!-- Category 3: Landlord Info (בעל הדירה) -->
-            <div class="review-category-card">
+            <div class="review-category-card" id="cardLandlord">
               <div class="review-category-header">
                 <div style="display: flex; align-items: center; gap: 0.45rem;">
                   <span class="review-cat-icon">
@@ -961,14 +1009,16 @@
                   </span>
                   <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">3. בעל הדירה (המשכיר)</span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnEditLandlord" onclick="toggleEditCard('Landlord')" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
               </div>
-              <div class="review-category-body">
+              
+              <!-- View Mode -->
+              <div class="review-category-body" id="viewLandlord">
                 <div class="review-field-row">
                   <span class="review-field-label">שם ותעודת זהות:</span>
                   <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
                     <strong class="review-field-val" id="sumLandlord">דוד כהן (ת.ז: 058765432)</strong>
-                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                    <span class="extracted-highlight-badge" id="badgeLandlord" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       מאומת במסמכים
                     </span>
@@ -979,10 +1029,28 @@
                   <span class="review-field-val" style="color: var(--slate-700);">בעל נכס רשום במרשם התאגיד</span>
                 </div>
               </div>
+
+              <!-- Inline Edit Mode -->
+              <div class="review-category-body" id="editLandlord" style="display: none; padding-top: 0.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.6rem;">
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">שם מלא של בעל הנכס:</label>
+                    <input type="text" id="inlineEditLandlordName" value="דוד כהן" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                  </div>
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">ת.ז משכיר:</label>
+                    <input type="text" id="inlineEditLandlordId" value="058765432" maxlength="9" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem; font-family: monospace;">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditCard('Landlord', false)" style="font-size: 0.74rem; padding: 0.2rem 0.5rem;">ביטול</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="saveEditCard('Landlord')" style="font-size: 0.74rem; padding: 0.2rem 0.65rem;">שמירה ✓</button>
+                </div>
+              </div>
             </div>
 
             <!-- Category 4: Meter & Quota (מונה והנחת מים) -->
-            <div class="review-category-card">
+            <div class="review-category-card" id="cardMeter">
               <div class="review-category-header">
                 <div style="display: flex; align-items: center; gap: 0.45rem;">
                   <span class="review-cat-icon">
@@ -990,14 +1058,16 @@
                   </span>
                   <span style="font-size: 0.9rem; font-weight: 800; color: var(--slate-900);">4. מונה מים והקצאת נפשות</span>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="goToStep(4)" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnEditMeter" onclick="toggleEditCard('Meter')" style="font-size: 0.74rem; padding: 0.2rem 0.55rem;">עריכה ✎</button>
               </div>
-              <div class="review-category-body">
+              
+              <!-- View Mode -->
+              <div class="review-category-body" id="viewMeter">
                 <div class="review-field-row">
                   <span class="review-field-label">קריאת מונה:</span>
                   <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
                     <strong class="review-field-val" id="sumMeter" style="font-size: 0.95rem; color: var(--primary-900);">00384.2 מ"ק</strong>
-                    <span class="extracted-highlight-badge" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
+                    <span class="extracted-highlight-badge" id="badgeMeter" style="font-size: 0.68rem; padding: 0.05rem 0.4rem;">
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       חולץ מהצילום
                     </span>
@@ -1006,6 +1076,24 @@
                 <div class="review-field-row">
                   <span class="review-field-label">זכאות והנחת מים:</span>
                   <span class="review-field-val" id="sumResidents" style="font-weight: 600;">2 נפשות (14 מ"ק לחודש בתעריף מוזל)</span>
+                </div>
+              </div>
+
+              <!-- Inline Edit Mode -->
+              <div class="review-category-body" id="editMeter" style="display: none; padding-top: 0.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.6rem;">
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">קריאת מונה (מ"ק):</label>
+                    <input type="text" id="inlineEditMeterReading" value="00384.2" placeholder="00000.0" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; font-weight: 700; font-family: monospace;">
+                  </div>
+                  <div>
+                    <label style="font-size: 0.72rem; font-weight: 700; color: var(--slate-700); display: block; margin-bottom: 2px;">מספר נפשות מוכרות:</label>
+                    <input type="number" id="inlineEditResidentsCount" value="2" min="1" max="15" class="form-input" style="padding: 0.35rem 0.5rem; font-size: 0.82rem;">
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditCard('Meter', false)" style="font-size: 0.74rem; padding: 0.2rem 0.5rem;">ביטול</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="saveEditCard('Meter')" style="font-size: 0.74rem; padding: 0.2rem 0.65rem;">שמירה ✓</button>
                 </div>
               </div>
             </div>
